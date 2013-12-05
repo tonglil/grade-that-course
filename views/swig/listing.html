@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title|title }}{% endblock %}
+
+{% block content %}
+<h1>{{ title|title }}</h1>
+<ul>
+    {% for x in items %}
+    <li>
+    {% if x['code'] %}
+        {{ x['code'] }}
+        <ul>
+            <li>{{ x['name'] }}</li>
+            <li>{{ x['faculty'] }}</li>
+        </ul>
+    {% elif x['number'] %}
+        {{ x['number'] }}
+        <ul>
+            <li>{{ x['name'] }}</li>
+        </ul>
+    {% endif %}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endblock %}

@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    h1= title
+    ul
+        - items.forEach(function(item) {
+            li
+                if item['code']
+                    p= item['code']
+                    ul
+                        li= item['name']
+                        li= item['faculty']
+                else if item['number']
+                    p= item['number']
+                    ul
+                        li= item['name']
+        - })

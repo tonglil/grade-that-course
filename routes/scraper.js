@@ -41,7 +41,6 @@ exports.listing = function(req, res){
             title: $('title').text(),
             items: courses
         });
-        //res.end($('title').text());
     });
 };
 
@@ -74,6 +73,9 @@ exports.subject = function(req, res){
 
         //TODO: store this data in database under right category;
 
-        res.end($('title').text());
+        res.render('listing', {
+            title: $('title').text(),
+            items: courses
+        });
     });
 };

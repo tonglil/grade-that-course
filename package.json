@@ -9,6 +9,7 @@
     "express": "3.4.6",
     "jade": "*",
     "cheerio": "*",
-    "request": "*"
+    "request": "*",
+    "swig": "~1.2.2"
   }
 }
