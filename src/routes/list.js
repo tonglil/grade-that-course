@@ -1,24 +1,61 @@
 /*
- *Scraping endpoints
+ *Listing endpoints
  */
 
 var cheerio = require('cheerio');
 var request = require('request');
 var url     = require('url');
+var log     = require('../controllers/logging').logger;
+
+var models  = require('../models');
+var Sequelize = models.Sequelize;
+var Subject = models.Subject;
 
 module.exports = function(app) {
-    app.get('/list', list);
-    app.get('/list/subject', subject);
+    //app.get('/list', list);
+    app.get('/list/subject/:subject', listSubject);
 };
 
 function list(req, res) {
     a = 'get list from db';
     console.log(a);
+
+/*
+ *    function assignOwner(user, pet) {
+ *        var chainer = new Sequelize.Utils.QueryChainer();
+ *        chainer.add(pet.setOwner(user));
+ *        chainer.add(user.updateAttributes({
+ *            numberOfPets: user.numberOfPets + 1
+ *        }));
+ *
+ *        chainer.runSerially().success(function() {
+ *            console.log(user.firstName + ' is the owner of ' + pet.name);
+ *        }).error(function(err) {
+ *            console.log('error:', err);
+ *        });
+ *    }
+ */
+
     return res.json(a);
 }
 
-function subject(req, res) {
-    a = 'get courses from db';
-    console.log(a);
-    return res.json(a);
+function listSubject(req, res) {
+    var subjectName = req.params.subject;
+
+    Subject.find({
+        where: { code: subjectName }
+    }).success(function(subject) {
+        subject.getCourses().success(function(courses) {
+        var courseList = [];
+            courses.forEach(function(item) {
+                var single = {};
+                single.code = item.code;
+                single.number = item.number;
+                single.name = item.name;
+                single.subject = subject.code;
+                courseList.push(single);
+            });
+        return res.json(courseList);
+        });
+    });
 }

@@ -7,7 +7,10 @@ var http = require('http');
 
 var app = express();
 
-require('./config')(app);
+//Load application
+require('./config/environment')(app);
+require('./config/view')(app);
+
 require('./routes')(app);
 
 http.createServer(app).listen(app.get('port'), function(){
