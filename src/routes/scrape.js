@@ -1,12 +1,27 @@
 /*
- * Scraper
+ *Scraping endpoints
  */
 
-cheerio = require('cheerio');
-request = require('request');
-url = require('url');
+var cheerio = require('cheerio');
+var request = require('request');
+var url     = require('url');
 
-exports.listing = function(req, res){
+module.exports = function(app) {
+    app.get('/scrape', all);
+    app.get('/scrape/list', list);
+    app.get('/scrape/subject', subject);
+};
+
+function all(req, res) {
+    a = 'trigger all scrape actions';
+    console.log(a);
+    return res.json(a);
+}
+
+function list(req, res) {
+    a = 'scrape the list\'s subjects and Faculties here';
+    console.log(a);
+
     //var target = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=1&dept=EECE';
     var target = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=0';
 
@@ -42,9 +57,12 @@ exports.listing = function(req, res){
             items: courses
         });
     });
-};
+}
 
-exports.subject = function(req, res){
+function subject(req, res) {
+    a = 'scrape a subject\'s courses here';
+    console.log(a);
+
     var target = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=1&dept=EECE';
 
     //Fetch the target site, send the results to a callback function
@@ -78,4 +96,4 @@ exports.subject = function(req, res){
             items: courses
         });
     });
-};
+}
