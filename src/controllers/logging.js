@@ -12,20 +12,14 @@ exports.logger = function() {
     }
 };
 
-exports.logError = function(res, error, message, status) {
-    res = res || null;
-    error = error || '';
-    message = message || 'Error';
-    status = status || 500;
+exports.logError = function(message, result) {
+    message = message || 'generic error';
+    result = result || null;
 
     console.log({
-        type: 'error',
-        http: status,
         message: message,
-        error: error
+        result: result
     });
 
-    if (res) {
-        return res.send(status, message);
-    }
+    return result;
 };

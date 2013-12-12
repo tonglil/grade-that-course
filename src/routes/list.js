@@ -11,11 +11,12 @@ var Sequelize = models.Sequelize;
 var Subject = models.Subject;
 
 module.exports = function(app) {
-    //app.get('/list', list);
+    app.get('/list/all', listAll);
     app.get('/list/subject/:subject', listSubject);
+    //app.get('/list/course/:subject/:number', listCourse);
 };
 
-function list(req, res) {
+function listAll(req, res) {
     a = 'get list from db';
     console.log(a);
 

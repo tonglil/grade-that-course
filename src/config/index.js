@@ -11,7 +11,7 @@ module.exports = {
             //host: localhost,
             //port: 3306,
             //protocol: 'tcp',
-            //logging: console.log,
+            logging: false,
             //maxConcurrentQueries: 50,
             //storage: ':memory:',
             //omitNull: false,
