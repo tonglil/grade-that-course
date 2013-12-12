@@ -4,7 +4,6 @@
 
 var cheerio = require('cheerio');
 var request = require('request');
-var url     = require('url');
 var log     = require('../controllers/logging').logger;
 
 var models  = require('../models');
