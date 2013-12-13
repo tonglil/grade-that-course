@@ -4,9 +4,10 @@
 
 var cheerio = require('cheerio');
 var request = require('request');
-var log     = require('../controllers/logging').logger;
+var log     = require('../controllers/logging').log;
+var logv    = require('../controllers/logging').logVerbose;
+
 var badge   = require('../controllers/logging').logError;
-var config  = require('../config').app;
 
 var models  = require('../models');
 var Sequelize = models.Sequelize;
@@ -16,10 +17,10 @@ var Faculty = models.Faculty;
 
 module.exports = function(app) {
     app.get('/scrape', scrapeAll);
-    app.get('/scrape/subjects', scrapeSubjects);
-
     app.get('/scrape/list', scrapeList);
+    app.get('/scrape/subjects', scrapeSubjects);
     app.get('/scrape/subject/:subject', scrapeSubject);
+
     app.get('/scrape/course/:subject/:number', scrapeCourse);
 };
 
@@ -29,6 +30,7 @@ function scrapeAll(req, res) {
     console.log(a);
 
     // scrape flow: scrape subjects, then scrape courses, then scrape course details.
+    // might have to use async
 
     Subject.findAll().success(function(subjects) {
         subjects.forEach(function(subject) {
@@ -146,142 +148,62 @@ function scrapeCourse(req, res) {
 
 
 
+var Scraper = require('../controllers/Scraper');
 
-// looks for all subjects and calls scrapeSubject on each one.
+//Looks for all subjects and scrapes each one
 function scrapeSubjects(req, res) {
-    a = 'trigger all subject scrape actions';
-    console.log(a);
+    var response = {};
+    response.message = 'Scraping all subjects';
+    logv(response);
+
+    var SubjectScraper = Scraper.SubjectScraper;
 
     Subject.findAll().success(function(subjects) {
-        var result = [];
         subjects.forEach(function(subject, i) {
-            //log(subject.values.code);
-            result[i] = scrapeSubjectsProcess(subject.values.code);
+            SubjectScraper(subject.values.code, function(err, result) {
+                log(err);
+                logv(result);
+            });
         });
-        //log(result);
 
-        /*
-         *for (var i = 0; i < subjects.length; i++) {
-         *    process(subjects[i]);
-         *    // check for errors in result!
-         *    //log('overall subjects scrape error');
-         *}
-         */
+        return res.json(message);
+    }).error(function(err) {
+        log(err);
+        return res.json(400, message);
     });
-
-    return res.json(a);
-}
-
-var subjectScraper = require('../controllers/SubjectScraper').subjectScraper;
-
-//Processes a single subject
-function scrapeSubjectsProcess(code) {
-    subjectScraper(code).success(function() {
-        log('success!');
-        return true;
-    }).error(function() {
-        log('error sadface');
-        return false;
-    }).run();
-}
-
-function process(subject) {
-    test(subject).failure(function() {
-        log('it failed (but still worked)!!!!!!!!!');
-    }).success(function() {
-        log('wow it worked!!!!!!!!!!!!!!!!!!');
-    }).run();
-
-    test.call(subject, subject.code).success(function() {
-        log('wow it worked!!!!!!!!!!!!!!!!!!');
-    }).failure(function() {
-        log('it failed (but still worked)!!!!!!!!!');
-    }).run();
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-//get scrape a specific subject's courses
+//Scrapes a specific subject's courses
+//@par: subject     subject code
 function scrapeSubject(req, res) {
-    var a = 'trigger a subject\'s courses scrape actions';
-    console.log(a);
+    var code = req.params.subject;
+    var response = {};
+    response.message = 'Scrapping ' + code + '\'s courses';
+    logv(response);
 
-    var subjectName = req.params.subject;
-    var result = doScrapeSubject(subjectName);
+    var SubjectScraper = Scraper.SubjectScraper;
 
-    return res.json(result);
+    SubjectScraper(code, function(err, result) {
+        log(err);
+        logv(result);
+
+        return res.json(response);
+    });
 }
 
-//scrapes all subjects and faculties for a given directory
+//Scrapes a specific directory's subjects and faculties
 function scrapeList(req, res) {
-    var target = 'https://courses.students.ubc.ca/cs/main?pname=subjarea';
+    var response = {};
+    response.message = 'Scrapping the directory';
+    logv(response);
 
-    request(target, function(err, response, body) {
-        if (err || response.statusCode !== 200) {
-            return badge(res, err, 'Scrape request error');
-        }
+    var ListScraper = Scraper.ListScraper;
 
-        var $ = cheerio.load(body);
-        $body = $('body');
-        $mainTable = $body.find('#mainTable');
-        $courseTable = $mainTable.find("tr[class^='section']");
+    ListScraper(function(err, result) {
+        log(err);
+        logv(result);
 
-        var data = [];
-        $courseTable.each(function(i, item) {
-            var list = {};
-            list.code = $(item).children('td:nth-of-type(1)').text().replace('*', '').trim();
-            list.subject = $(item).children('td:nth-of-type(2)').text().trim();
-            list.faculty = $(item).children('td:nth-of-type(3)').text().trim();
-            data.push(list);
-        });
-
-        var faculties = Sequelize.Utils._.chain(data).map(function(item) {
-            return item.faculty;
-        }).uniq().value();
-
-        faculties.forEach(function(item) {
-            Faculty.findOrCreate({
-                name: item
-            }).error(function(err) {
-                badge(null, err, 'Faculty not found/created');
-            });
-        });
-
-        data.forEach(function(item) {
-            Subject.findOrCreate({
-                code: item.code
-            }).success(function(subject) {
-                subject.updateAttributes({
-                    name: item.subject
-                });
-                Faculty.find({
-                    where: { name: item.faculty }
-                }).success(function(faculty) {
-                    subject.setFaculty(faculty).error(function(err) {
-                        badge(null, err, 'Subject faculty not set');
-                    });
-                }).error(function(err) {
-                    badge(null, err, 'Subject\'s faculty not found');
-                });
-            }).error(function(err) {
-                badge(null, err, 'Subject not found/created');
-            });
-        });
-
-        //TODO no need to render, perhaps send an 'ok' response?
-        res.render('listing', {
-            title: $('title').text(),
-            items: data
-        });
+        return res.json(response);
     });
 }

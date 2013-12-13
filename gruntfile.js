@@ -10,7 +10,11 @@ module.exports = function(grunt) {
                     env: {
                         PORT: '4000'
                     },
-                    ignoredFiles: ['gruntfile.js', 'node_modules/**']
+                    ignoredFiles: [
+                        'gruntfile.js',
+                        'node_modules/**',
+                        '.git/**'
+                    ]
                 }
             }
         },

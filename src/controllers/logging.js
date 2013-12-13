@@ -4,11 +4,22 @@
 
 var config = require('../config').logging;
 
-exports.log = console.log.bind(console, 'Logging:');
+//old, but provides custom header
+//exports.log = console.log.bind(console, 'Logging:');
 
-exports.logger = function() {
+exports.log = function() {
     if (config.verbose) {
-        console.log.apply(console, arguments);
+        if (arguments[0] !== null) {
+            console.log.apply(console, arguments);
+        }
+    }
+};
+
+exports.logVerbose = function() {
+    if (config.vverbose) {
+        if (arguments[0] !== null) {
+            console.log.apply(console, arguments);
+        }
     }
 };
 
