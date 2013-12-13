@@ -8,9 +8,6 @@ var log     = require('../controllers/logging').logger;
 var badge   = require('../controllers/logging').logError;
 var config  = require('../config').app;
 
-// emitters
-var events = require('events');
-
 var models  = require('../models');
 var Sequelize = models.Sequelize;
 var Course  = models.Course;
@@ -133,87 +130,86 @@ function scrapeCourse(req, res) {
     });
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // looks for all subjects and calls scrapeSubject on each one.
 function scrapeSubjects(req, res) {
     a = 'trigger all subject scrape actions';
     console.log(a);
 
     Subject.findAll().success(function(subjects) {
-        //log(subjects);
-        //log(JSON.stringify(subjects));
+        var result = [];
+        subjects.forEach(function(subject, i) {
+            //log(subject.values.code);
+            result[i] = scrapeSubjectsProcess(subject.values.code);
+        });
+        //log(result);
 
-        for (var i = 0; i < subjects.length; i++) {
-            result = doScrapeSubject.call(subjects[i], subjects[i].code);
-            // check for errors in result!
-            //log('overall subjects scrape error');
-        }
+        /*
+         *for (var i = 0; i < subjects.length; i++) {
+         *    process(subjects[i]);
+         *    // check for errors in result!
+         *    //log('overall subjects scrape error');
+         *}
+         */
     });
 
     return res.json(a);
 }
 
-function doScrapeSubject(subjectName) {
-    var target = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=1&dept=' + subjectName;
-    var result;
+var subjectScraper = require('../controllers/SubjectScraper').subjectScraper;
 
-    request(target, function(err, response, body) {
-        if (err || !response) {
-            result.error = err;
-            if (response) {
-                result.code = response.statusCode;
-            }
-            return badge('doScrapeSubject request', result);
-        }
-
-        var $ = cheerio.load(body);
-        $body = $('body');
-        $mainTable = $body.find('#mainTable');
-        $courseTable = $mainTable.find("tr[class^='section']");
-
-        var subjectCourses = [];
-        $courseTable.each(function(i, item) {
-            var course = {};
-            var regex = /[0-9].*/;
-            course.number = $(item).children('td:nth-of-type(1)').text().trim().match(regex)[0];
-            course.name = $(item).children('td:nth-of-type(2)').text().trim();
-            subjectCourses.push(course);
-        });
-
-        if (subjectCourses.length === 0) {
-            result = {
-                code: 404,
-                error: 'Subject ' + subjectName + ' has no courses/was not found'
-            };
-            return badge('doScrapeSubject', result);
-        }
-
-        subjectCourses.forEach(function(item) {
-            Course.findOrCreate({
-                code: subjectName + item.number
-            }).success(function(course) {
-                course.updateAttributes({
-                    number: item.number,
-                    name: item.name
-                });
-                Subject.find({
-                    where: { code: subjectName }
-                }).success(function(subject) {
-                    course.setSubject(subject).error(function(err) {
-                        result = {
-                            code: 400,
-                            error: err
-                        };
-                        return badge('doScrapeSubject, course subject not set', result)
-                    });
-                });
-            }).error(function(err) {
-                badge(null, err, 'Course not found/created');
-            });
-        });
-
-        return subjectCourses;
-    });
+//Processes a single subject
+function scrapeSubjectsProcess(code) {
+    subjectScraper(code).success(function() {
+        log('success!');
+        return true;
+    }).error(function() {
+        log('error sadface');
+        return false;
+    }).run();
 }
+
+function process(subject) {
+    test(subject).failure(function() {
+        log('it failed (but still worked)!!!!!!!!!');
+    }).success(function() {
+        log('wow it worked!!!!!!!!!!!!!!!!!!');
+    }).run();
+
+    test.call(subject, subject.code).success(function() {
+        log('wow it worked!!!!!!!!!!!!!!!!!!');
+    }).failure(function() {
+        log('it failed (but still worked)!!!!!!!!!');
+    }).run();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //get scrape a specific subject's courses
 function scrapeSubject(req, res) {
