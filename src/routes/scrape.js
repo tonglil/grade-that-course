@@ -2,12 +2,8 @@
  *Scraping endpoints
  */
 
-var cheerio = require('cheerio');
-var request = require('request');
 var log     = require('../controllers/logging').log;
 var logv    = require('../controllers/logging').logVerbose;
-
-var badge   = require('../controllers/logging').logError;
 
 var models  = require('../models');
 var Sequelize = models.Sequelize;
@@ -16,11 +12,11 @@ var Subject = models.Subject;
 var Faculty = models.Faculty;
 
 module.exports = function(app) {
-    app.get('/scrape', scrapeAll);
+    //app.get('/scrape', scrapeAll);
     app.get('/scrape/list', scrapeList);
     app.get('/scrape/subjects', scrapeSubjects);
     app.get('/scrape/subject/:subject', scrapeSubject);
-
+    app.get('/scrape/courses', scrapeCourses);
     app.get('/scrape/course/:subject/:number', scrapeCourse);
 };
 
@@ -30,25 +26,10 @@ function scrapeAll(req, res) {
     console.log(a);
 
     // scrape flow: scrape subjects, then scrape courses, then scrape course details.
-    // might have to use async
 
     Subject.findAll().success(function(subjects) {
         subjects.forEach(function(subject) {
             log(subject.code);
-
-            //Course.
-
-
-            //var test = ['101', '110'];
-            //test.forEach(function(item) {
-                //var endpoint = 'http://' + config.url + '/scrape/course/' + subject.code + '/' + item;
-                //request(endpoint, function(err, response, body) {
-                    //if (err || response.statusCode !== 200) {
-                        //log('scrape error');
-                        ////return badge(null, err, 'Scrape request error');
-                    //}
-                //});
-            //});
         });
     });
 
@@ -59,78 +40,15 @@ function scrapeAll(req, res) {
     return res.json(a);
 }
 
-//get meta data for a given course
-function scrapeCourse(req, res) {
-    var subject = req.params.subject;
-    var number = req.params.number;
-    var target = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=3&dept=' + subject + '&course=' + number;
 
-    request(target, function(err, response, body) {
-        if (err || response.statusCode !== 200) {
-            return badge(res, err, 'Error: scrape request');
-        }
 
-        var $ = cheerio.load(body);
-        $body = $('body');
-        $description = $body.find('.content.expand').children('p').slice(0,1).text().trim();
-        $credits = $body.find('.content.expand').children('p').slice(1,2).text().trim().slice(-1);
-        // number and name?
 
-        if ($description && $credits) {
-            var newCourse = Course.build({
-                code: subject + number,
-                number: number,
-                description: $description,
-                credits: $credits
-            });
 
-            Course.find({
-                where: { code: newCourse.code }
-            }).success(function(course) {
-                if (course) {
-                    course.updateAttributes({
-                        number: newCourse.number,
-                        description: newCourse.description,
-                        credits: newCourse.credits
-                    }).error(function(err) {
-                        badge(null, err, 'Error: course not updated');
-                    });
-                } else {
-                    newCourse.save().error(function(err) {
-                        badge(null, err, 'Error: course not saved');
-                    });
-                }
-            }).error(function(err) {
-                badge(null, err, 'Error: course not saved/updated');
-            });
 
-            /*
-             *Course.findOrCreate({
-             *    code: newCourse.code
-             *}, {
-             *    number: newCourse.number,
-             *    description: newCourse.description,
-             *    credits: newCourse.credits
-             *}).success(function(course) {
-             *    course.updateAttributes({
-             *        number: newCourse.number,
-             *        description: newCourse.description,
-             *        credits: newCourse.credits
-             *    }).error(function(err) {
-             *        badge(null, err, 'Error: course not updated');
-             *    });
-             *}).error(function(err) {
-             *    badge(null, err, 'Error: course not found/created');
-             *});
-             */
 
-            //TODO no need to render, perhaps send an 'ok' response?
-            return res.send(200, $description + '</br>' + $credits);
-        } else {
-            return res.send(500, 'Error: course not found');
-        }
-    });
-}
+
+
+
 
 
 
@@ -150,6 +68,144 @@ function scrapeCourse(req, res) {
 
 var Scraper = require('../controllers/Scraper');
 
+//Scrapes a specific course's information
+//@par: subject     subject code
+//@par: number      course number
+function scrapeCourse(req, res) {
+    var code = req.params.subject;
+    var number = req.params.number;
+    var response = {};
+    response.message = 'Scrapping ' + code + number + '\'s details';
+    logv(response);
+
+    var CourseScraper = Scraper.CourseScraper;
+
+    CourseScraper(code, number, function(err, result) {
+        log(err);
+        logv(result);
+
+        return res.json(response);
+    });
+}
+
+
+
+
+//Scrapes all courses in a subject's information
+function scrapeCoursesback(req, res) {
+    var response = {};
+    response.message = 'Scraping all courses\' information';
+    logv(response);
+
+    var CourseScraper = Scraper.CourseScraper;
+    var CourseBulkScraper = Scraper.CourseBulkScraper;
+    var async = require('async');
+
+    /*
+     *Subject.findAll({
+     *    include: [Course]
+     *}).success(function(subjects) {
+     *    var queue = async.queue(CourseBulkScraper, 5);
+     *    for (var i = 0; i < subjects.length; i++) {
+     *        for (var j = 0; j < subjects[i].courses.length; j++) {
+     *            queue.push(subjects[i].courses[j]);
+     *        }
+     *    }
+     *    log('yes, done pushing');
+     *    queue.drain = function() {
+     *        log("DONE!!!!!");
+     *    };
+     *});
+     */
+
+    /*
+     *Subject.findAll().success(function(subjects) {
+     *    for (var i = 0; i < subjects.length; i++) {
+     *        subject = subjects[i];
+     *        Course.findAll({
+     *            //where: { subject: subject }
+     *        //}).success(function(courses) {
+     *            //var queue = async.queue(CourseBulkScraper, 5);
+     *            //for (var j = 0; j < courses.length; j++) {
+     *                //var course = courses[j];
+     *                //if (!course.credits || !course.description) {
+     *                    //queue.push(course);
+     *                //}
+     *            //}
+     *            //queue.drain = function() {
+     *                //log('DONE!!!!!!!!!!!');
+     *            //};
+     *            //log('done for a course');
+     *        });
+     *    }
+     *    log('done for all subjects');
+     *});
+     */
+
+/*
+ *    Subject.findAll({
+ *        include: [Course]
+ *    }).success(function(subjects) {
+ *        var i = 0;
+ *        var j = 0;
+ *        while (i < subjects.length) {
+ *        //subjects.forEach(function(subject, i) {
+ *            var course = subjects[i].courses;
+ *            while (j < subjects[i].courses.length) {
+ *            //subject[i].courses.forEach(function(course, i) {
+ *                CourseScraper(subjects[i].code, course[j].values.number, function(err, result) {
+ *                    log(err);
+ *                    log(result);
+ *
+ *                    //return res.json(response);
+ *                });
+ *                j++;
+ *            //});
+ *            }
+ *            i++;
+ *        //});
+ *        }
+ *    }).error(function(err) {
+ *        log(err);
+ *        return res.json(400, response);
+ *    });
+ */
+}
+
+
+//Scrapes all courses in a subject's information
+function scrapeCourses(req, res) {
+    var response = {};
+    response.message = 'Scraping all courses\' information';
+    logv(response);
+
+    var CourseBulkScraper = Scraper.CourseBulkScraper;
+
+    Course.findAll({
+        where: {
+            //TODO: want to search for courses will no credits OR no description
+            //perhaps would want to do a force reset, when can't empty out db?
+            credits: null,
+            //description: null,
+        }
+    }).success(function(courses) {
+        //TODO: add emitter to bulk?
+        CourseBulkScraper(courses, function() {
+            return res.json(response);
+        });
+    }).error(function(err) {
+        log(err);
+        return res.json(400, response);
+    });
+}
+
+
+
+
+
+
+
+
 //Looks for all subjects and scrapes each one
 function scrapeSubjects(req, res) {
     var response = {};
@@ -158,6 +214,7 @@ function scrapeSubjects(req, res) {
 
     var SubjectScraper = Scraper.SubjectScraper;
 
+    //TODO: use for & chainer?
     Subject.findAll().success(function(subjects) {
         subjects.forEach(function(subject, i) {
             SubjectScraper(subject.values.code, function(err, result) {
@@ -166,13 +223,12 @@ function scrapeSubjects(req, res) {
             });
         });
 
-        return res.json(message);
+        return res.json(response);
     }).error(function(err) {
         log(err);
-        return res.json(400, message);
+        return res.json(400, response);
     });
 }
-
 
 //Scrapes a specific subject's courses
 //@par: subject     subject code

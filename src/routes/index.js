@@ -7,7 +7,17 @@ module.exports = function(app) {
         res.render('index', {
             title: 'UBC Course Voter',
             description: 'Currently a work in progress for a course voter (rate my prof/hn/reddit) for ubc.',
-            menu: ["scrape", "scrape/list", "scrape/subject", "list", "list/subject"]
+            menu: [
+                'scrape',
+                'scrape/list',
+                'scrape/subjects',
+                'scrape/subject/EECE',
+                'scrape/courses',
+                'scrape/course/EECE/320',
+                'list/all',
+                'list/subject/EECE',
+                'list/course/EECE/320'
+            ]
         });
     });
 

@@ -12,14 +12,14 @@ module.exports = {
             //port: 3306,
             //protocol: 'tcp',
             logging: false,
-            //maxConcurrentQueries: 50,
+            maxConcurrentQueries: 100,
             //storage: ':memory:',
             //omitNull: false,
             //native: false,
             //defined: {},
             //sync: { force: true },
             //syncOnAssociation: true,
-            //pool: { maxConnections: 5, maxIdleTime: 30 },
+            pool: { maxConnections: 5, maxIdleTime: 30 },
             //language: 'en',
             dialect: 'postgres'
         }
