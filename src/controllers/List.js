@@ -3,6 +3,7 @@
  */
 
 var cache   = require('memory-cache');
+var cacheTime = require('../config').cache;
 var log     = require('../controllers/logging').log;
 
 var models  = require('../models');
@@ -38,7 +39,7 @@ function getAllCourses(callback) {
                 delete course.updatedAt;
                 courseList.push(course);
             });
-            cache.put('courses', courseList);
+            cache.put('courses', courseList, cacheTime.day);
             if (callbackOn) return callback(null, courseList);
         }).error(function(err) {
             if (errback && typeof errback == 'function') {
@@ -76,7 +77,7 @@ function getSubjectCourses(subjectCode, callback) {
                 delete course.updatedAt;
                 courseList.push(course);
             });
-            cache.put(subjectCode + 'courses', courseList);
+            cache.put(subjectCode + 'courses', courseList, cacheTime.hour);
             if (callbackOn) return callback(null, courseList);
         }).error(function(err) {
             if (errback && typeof errback == 'function') {
@@ -139,7 +140,7 @@ function getCourse(subjectCode, courseNumber, callback) {
             var course = dbCourse.values;
             delete course.createdAt;
             delete course.updatedAt;
-            cache.put(courseCode, course);
+            cache.put(courseCode, course, cacheTime.min3);
             if (callbackOn) return callback(null, course);
         }).error(function(err) {
             if (errback && typeof errback == 'function') {

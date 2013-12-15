@@ -7,8 +7,14 @@ var path = require('path');
 
 module.exports = function(app) {
     all(app);
-    dev(app);
-    prod(app);
+
+    if ('development' == app.get('env')) {
+        dev(app);
+    }
+
+    if ('production' == app.get('env')) {
+        prod(app);
+    }
 };
 
 function all(app) {
@@ -24,13 +30,13 @@ function all(app) {
     app.use(express.static(path.join(__dirname, 'public')));
 }
 
+//Development specific config
 function dev(app) {
-    if ('development' == app.get('env')) {
-        console.log('Running on development environment');
-        app.use(express.errorHandler());
-    }
+    console.log('Running on development environment');
+    app.use(express.errorHandler());
 }
 
+//Production specific config
 function prod(app) {
-    //production specific config
+    console.log('Running on prodution environment');
 }
