@@ -15,8 +15,8 @@ var data = {
 var models = [
     'Course',
     'Subject',
-    'Faculty',
-    'User'
+    'Faculty'
+    //'User'
 ];
 
 models.forEach(function(model) {
@@ -31,10 +31,5 @@ data.Course.belongsTo(data.Subject, { as: 'Subject' });
 
 data.Faculty.hasMany(data.Subject, { as: 'Subjects' });
 data.Subject.belongsTo(data.Faculty, { as: 'Faculty' });
-
-db.sync({
-    //WARNING: DROPS TABLES!
-    //force:true
-});
 
 module.exports = data;
