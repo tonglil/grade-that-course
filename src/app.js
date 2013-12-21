@@ -16,7 +16,7 @@ require('./routes')(app);
 var models = require('./models');
 
 models.db.sync({
-    force: true
+    //force: true
 }).complete(function(err) {
     if (err) {
         console.log(err);

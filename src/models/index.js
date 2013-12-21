@@ -13,10 +13,11 @@ var data = {
 };
 
 var models = [
-    'Course',
+    'Faculty',
     'Subject',
-    'Faculty'
-    //'User'
+    'Course',
+    'Score',
+    'User'
 ];
 
 models.forEach(function(model) {
@@ -25,11 +26,15 @@ models.forEach(function(model) {
 
 //Define relationships
 
+data.Course.hasOne(data.Score, { as: 'Scores' });
+data.Score.belongsTo(data.Course, { as: 'Course' });
+
 data.Subject.hasMany(data.Course, { as: 'Courses' });
 data.Course.belongsTo(data.Subject, { as: 'Subject' });
-//data.Course.hasOne(data.Subject, { as: 'Subject' });
 
 data.Faculty.hasMany(data.Subject, { as: 'Subjects' });
 data.Subject.belongsTo(data.Faculty, { as: 'Faculty' });
+
+//data.Faculty.sync({force: true});
 
 module.exports = data;

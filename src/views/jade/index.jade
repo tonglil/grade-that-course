@@ -2,10 +2,17 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}.
-  p #{description}
+  form(action='index-search', method='post', autocomplete='off')
+    input(id='index-search', type='text', name='course', value='search for a course...')
+  div(id='search-results')
+  p ...or pick from one of these faculties:
   ul
-    - menu.forEach(function(item) {
+    - faculties.forEach(function(faculty) {
         li
-            a(href="/" + item)= item.charAt(0).toUpperCase() + item.slice(1)
+            a(href='#' + faculty)= faculty
+    - })
+  ul
+    - scoring.forEach(function(category) {
+        li
+            a(href='#' + category)= category
     - })

@@ -9,6 +9,10 @@ module.exports = function(DB, Type) {
         name: {
             type: Type.STRING,
             unique: true
+        },
+        shortName: {
+            type: Type.STRING,
+            unique: true
         }
     });
 

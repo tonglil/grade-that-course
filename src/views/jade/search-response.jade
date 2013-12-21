@@ -1,0 +1,10 @@
+ul
+    - courses.forEach(function(course) {
+        li(class='course')
+            span(class='course-code')= course.code
+            span(class='course-name')= course.name
+            div(class='meta')
+                span(class='course-info')= course.subject
+                span(class='course-info')= course.description
+                span(class='course-info')= course.credits
+    - })

@@ -5,9 +5,9 @@
 var log     = require('../controllers/logging').log;
 
 //combine these things into one 'lookupCourses' and then pick out their methods
-var getAllCourses  = require('../controllers/List').getAllCourses;
-var getSubjectCourses  = require('../controllers/List').getSubjectCourses;
-var getCourse  = require('../controllers/List').getCourse;
+var getAllCourses = require('../controllers/List').getAllCourses;
+var getSubjectCourses = require('../controllers/List').getSubjectCourses;
+var getCourse = require('../controllers/List').getCourse;
 
 module.exports = function(app) {
     app.get('/list/all', listAll);

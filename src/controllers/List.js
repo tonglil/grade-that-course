@@ -1,5 +1,5 @@
 /*
- *Listing controller actions
+ *Controller actions to find courses
  */
 
 var cache   = require('memory-cache');
@@ -17,7 +17,7 @@ module.exports.getAllCourses = getAllCourses;
 
 //Object to fetch all courses from the database
 //TODO: (store in diff cache? no? or only if use new? does new defeat cache?)
-//TODO: selective fields by passing in filds they want in an object
+//TODO: selective fields by passing in fields they want in an object
 //@par: function        errback with errors
 //@par: function        callback with courses
 function getAllCourses(callback) {
@@ -42,9 +42,7 @@ function getAllCourses(callback) {
             cache.put('courses', courseList, cacheTime.day);
             if (callbackOn) return callback(null, courseList);
         }).error(function(err) {
-            if (errback && typeof errback == 'function') {
-                return callback(err);
-            }
+            if (callbackOn) return callback(err, null);
         });
     }
 }
@@ -80,9 +78,7 @@ function getSubjectCourses(subjectCode, callback) {
             cache.put(subjectCode + 'courses', courseList, cacheTime.hour);
             if (callbackOn) return callback(null, courseList);
         }).error(function(err) {
-            if (errback && typeof errback == 'function') {
-                return callback(err);
-            }
+            if (callbackOn) return callback(err, null);
         });
     }
 
@@ -113,7 +109,6 @@ function getSubjectCourses(subjectCode, callback) {
      */
 }
 
-
 //Make available via require().getCourse
 module.exports.getCourse = getCourse;
 
@@ -143,9 +138,49 @@ function getCourse(subjectCode, courseNumber, callback) {
             cache.put(courseCode, course, cacheTime.min3);
             if (callbackOn) return callback(null, course);
         }).error(function(err) {
-            if (errback && typeof errback == 'function') {
-                return callback(err);
+            if (callbackOn) return callback(err, null);
+        });
+    }
+}
+
+//Make available via require().getCourse
+module.exports.getCourseCode = getCourseCode;
+
+//Object to fetch a subject's courses from the database
+//TODO: (dealing with diffs since course might get updated often? or only if use new? does new defeat cache?)
+//@par: string          subject code + course number
+//@par: function        callback with error, courses
+function getCourseCode(courseCode, callback) {
+    var callbackOn = false;
+
+    if (callback && typeof callback == 'function') {
+        callbackOn = true;
+    }
+
+    var cached = cache.get(courseCode + 'List');
+    if (cached) {
+        if (callbackOn) return callback(null, cached);
+    } else {
+        Course.findAll({
+            where: ['code LIKE \'%' + courseCode + '%\''],
+            limit: 10
+        }).success(function(courses) {
+            if (courses) {
+                var courseList = [];
+                courses.forEach(function(dbCourse) {
+                    var course = dbCourse.values;
+                    delete course.createdAt;
+                    delete course.updatedAt;
+                    courseList.push(course);
+                });
+                cache.put(courseCode + 'List', courseList, cacheTime.min3);
+                if (callbackOn) return callback(null, courseList);
+            } else {
+                //TODO: proper way of handling?
+                if (callbackOn) return callback('Error: no course found.', null);
             }
+        }).error(function(err) {
+            if (callbackOn) return callback(err, null);
         });
     }
 }

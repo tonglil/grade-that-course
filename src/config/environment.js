@@ -19,15 +19,15 @@ module.exports = function(app) {
 
 function all(app) {
     app.set('port', process.env.PORT || 4000);
-    app.use(express.favicon());
     app.use(express.logger('dev'));
+    app.use(express.favicon());
     app.use(express.compress());
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.methodOverride());
-    //app.use(express.bodyParser());
+    app.use(express.bodyParser());
+    app.use(express.static(path.join(__dirname, '../public')));
     app.use(app.router);
-    app.use(express.static(path.join(__dirname, 'public')));
 }
 
 //Development specific config

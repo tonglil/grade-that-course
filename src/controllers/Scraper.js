@@ -1,5 +1,5 @@
 /*
- *Scraping controller actions
+ *Controller actions to scrape courses
  */
 
 var cheerio = require('cheerio');
@@ -13,13 +13,13 @@ var Course  = models.Course;
 var Subject = models.Subject;
 var Faculty = models.Faculty;
 
-//Make available via require().SubjectScraper
-module.exports.SubjectScraper = SubjectScraper;
+//Make available via require().subjectScraper
+module.exports.subjectScraper = subjectScraper;
 
 //Object to scrape a subject's courses
 //@par: string          subject code
 //@par: function        callback function with result
-function SubjectScraper(subjectCode, callback) {
+function subjectScraper(subjectCode, callback) {
     var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=1&dept=' + subjectCode;
     var result = {
         callee: arguments.callee.name,
@@ -95,12 +95,12 @@ function SubjectScraper(subjectCode, callback) {
     });
 }
 
-//Make available via require().ListScraper
-module.exports.ListScraper = ListScraper;
+//Make available via require().listScraper
+module.exports.listScraper = listScraper;
 
 //Object to scrape a list's subjects and faculties
 //@par: function        callback function with result
-function ListScraper(callback) {
+function listScraper(callback) {
     var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea';
     var result = {
         callee: arguments.callee.name,
@@ -177,16 +177,14 @@ function ListScraper(callback) {
     });
 }
 
-
-
-//Make available via require().CourseScraper
-module.exports.CourseScraper = CourseScraper;
+//Make available via require().courseScraper
+module.exports.courseScraper = courseScraper;
 
 //Object to scrape a course's description and credits
 //@par: string          subject code
 //@par: string          course number
 //@par: function        callback function with result
-function CourseScraper(subjectCode, courseNumber, callback) {
+function courseScraper(subjectCode, courseNumber, callback) {
     var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=3&dept=' + subjectCode + '&course=' + courseNumber;
     var result = {
         callee: arguments.callee.name,
@@ -290,13 +288,13 @@ function CourseScraper(subjectCode, courseNumber, callback) {
 
 
 
-//Make available via require().CourseBulkScraper
-module.exports.CourseBulkScraper = CourseBulkScraper;
+//Make available via require().courseBulkScraper
+module.exports.courseBulkScraper = courseBulkScraper;
 
 //Worker object for async to bulk scrape a course's description and credits
 //@par: courses         collection of courses to be scraped
 //@par: function        callback function with result
-function CourseBulkScraper(courses, callback) {
+function courseBulkScraper(courses, callback) {
     var queue = async.queue(function(course, callback) {
         var callbackOn = false;
 
