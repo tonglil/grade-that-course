@@ -19,11 +19,31 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            all: [
+            files: [
                 'gruntfile.js',
                 'src/**/*.js',
                 'test/**/*.js'
-            ]
+            ],
+            options: {
+                globals: {
+                    jQuery: true
+                }
+            }
+        },
+        cssmin: {
+            combine: {
+                options: {
+                    keepSpecialComments: '*'
+                },
+                files: {
+                    'src/public/css/style.css': [
+                        'src/public/css/reset.css',
+                        'src/public/css/functions.css',
+                        'src/public/css/font.css',
+                        'src/public/css/main.css'
+                    ]
+                }
+            }
         },
         watch: {
             //http://blog.ponyfoo.com/2013/11/13/grunt-tips-and-tricks
@@ -36,6 +56,13 @@ module.exports = function(grunt) {
                     'test/**/*.js'
                     ],
                 tasks: ['jshint']
+            },
+            css: {
+                files: [
+                    'src/public/css/*.css',
+                    '!src/public/css/style.css'
+                ],
+                tasks: ['cssmin']
             }
         },
         concurrent: {
@@ -50,6 +77,7 @@ module.exports = function(grunt) {
 
     // Load the plugins
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-nodemon');
     grunt.loadNpmTasks('grunt-concurrent');

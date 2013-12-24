@@ -9,8 +9,6 @@ var app = express();
 
 //Load application
 require('./config/environment')(app);
-require('./config/view')(app);
-
 require('./routes')(app);
 
 var models = require('./models');

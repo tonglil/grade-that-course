@@ -1,0 +1,83 @@
+/*
+ *Main
+ */
+
+/*
+ *Name: Don't Take That Course!
+ *Author: Tony Li
+ *Author URI: http://tonyli.ca
+ */
+
+/*
+ *Homepage
+ */
+
+body {
+    background: url('img/bg.png');
+}
+
+header {
+    background: #262937;
+}
+
+.content {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+header .content {
+    padding: 64px 0;
+}
+
+header .title {
+    font-family: 'NexaBold', Arial, sans-serif;
+    font-size: 64px;
+    /*text-shadow: 2px 2px 3px #000000;*/
+    /*color: #fffedf;*/
+    color: #FF9900;
+}
+
+header .subtitle {
+    font-family: 'NexaLight', Arial, sans-serif;
+    font-size: 32px;
+    /*text-shadow: 2px 2px 3px #000000;*/
+    color: #fffedf;
+}
+
+.content.search {
+    padding: 32px 0;
+}
+
+input#index-search {
+    height: 36px;
+    width: 100%;
+    font-size: 24px;
+    border: 0;
+    border-radius: 6px;
+}
+
+.course {
+    margin: 8px 0;
+    padding: 8px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 4px;
+}
+
+.course-name {
+    margin-left: 16px;
+}
+
+.meta {
+    margin: 16px 0 0;
+}
+
+.score {
+    margin: 16px 0 0;
+    overflow: hidden;
+}
+
+.score li {
+    float: left;
+    width: 12%;
+}

@@ -8,12 +8,14 @@ $(document).ready(function() {
                 type: 'POST',
                 url: '/index-search',
                 data: { course: search }
-            }).done(function(data) {
-                if (data.length === 0) {
-                    data = null;
+            }).done(function(results) {
+                if (results.length === 0) {
+                    results = null;
                 }
-                $('#search-results').html(data);
+                $('#search-results').html(results);
             });
+        } else {
+            $('#search-results').html(null);
         }
     });
 });

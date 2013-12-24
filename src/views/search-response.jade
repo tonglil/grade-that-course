@@ -1,0 +1,18 @@
+- courses.forEach(function(course) {
+    div.course
+        div.main-info
+            span.course-code= course.code
+            span.course-name= course.name
+        ul.meta
+            //li.course-subject= 'Subject: ' + course.subject
+            li.course-credits= 'Credits: ' + course.credits
+            li.course-description= 'Description: ' + course.description
+        ul.score
+            li#take.a= '5x take'
+            li#pass.b= '3x pass'
+            li#easy.a= '7x easy'
+            li#hard.b= '3x hard'
+            li#fun= '1x fun'
+            li#useful= '5x useful'
+            li#profWarn= '0x prof warn'
+- })

@@ -7,7 +7,8 @@ var log     = require('../controllers/logging').log;
 module.exports = function(app) {
     app.get('/', function(req, res) {
         res.render('index', {
-            title: '(Don\'t) Take That Course!',
+            title: '(don\'t) take that course',
+            subtitle: 'ubc edition',
             faculties: [
                 'arts',
                 'engineering',

@@ -1,0 +1,29 @@
+/*
+ *Functions
+ */
+
+p {
+    margin: 0 0 16px 0;
+}
+
+p:last-child {
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    /*margin: 0 0 20px 0;*/
+    /*font-size: 25px;*/
+    /*font-weight: 400;*/
+    /*letter-spacing: 0.5px;*/
+    /*color: #ffffff;*/
+}
+
+.left { float: left; }
+.right { float: right; }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.hidden { display: none; }
+

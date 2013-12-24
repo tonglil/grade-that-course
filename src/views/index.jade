@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  header
+      div.content
+        h1.title.text-center= title
+        h2.subtitle.text-center= subtitle
+  div.container
+      div.content.search
+        form(action='index-search', method='post', autocomplete='off')
+          input(id='index-search', class='text-center', type='text', name='course', placeholder='search for a course...')
+      div#search-results.content
+  div.container
+      div.content.other
+        p ...or pick from one of these faculties:
+        ul
+          - faculties.forEach(function(faculty) {
+              li
+                  a(href='#' + faculty)= faculty
+          - })
+        ul
+          - scoring.forEach(function(category) {
+              li
+                  a(href='#' + category)= category
+          - })
