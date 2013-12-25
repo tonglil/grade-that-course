@@ -1,5 +1,10 @@
 $(document).ready(function() {
     //should filter a pre-existing list to reduce being hammered on by users?
+    $('#index-search').keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
     $('#index-search').keyup(function(e) {
         //sanitize input
         var search = $(this).val();

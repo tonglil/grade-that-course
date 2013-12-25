@@ -3,10 +3,10 @@
  */
 
 p {
-    margin: 0 0 16px 0;
+    margin: 0 0 12px 0;
 }
 
-p:last-child {
+p:last-of-type {
     margin: 0;
 }
 
@@ -27,3 +27,60 @@ h1, h2, h3, h4, h5, h6 {
 
 .hidden { display: none; }
 
+.no-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.button {
+    padding: 10px 10px 8px;
+    margin: 4px 12px 4px 0;
+    float: left;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400px;
+    letter-spacing: 0.5px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.button:hover {
+    cursor: pointer;
+}
+
+.button:last-of-type {
+    margin-right: 0;
+}
+
+.bg-green {
+    color: #ffffff;
+    background: #2E8B57;
+}
+
+.bg-red {
+    color: #ffffff;
+    background: #E24C3E;
+}
+
+.bg-orange {
+    color: #ffffff;
+    background: #FF9900;
+}
+
+.bg-dark-blue {
+    color: #ffffff;
+    background: #262937;
+}
+
+.border-dark-blue {
+    border: 1px solid #262937;
+    color: #262937;
+}

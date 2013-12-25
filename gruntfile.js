@@ -85,7 +85,8 @@ module.exports = function(grunt) {
     //grunt.loadNpmTasks('grunt-contrib-imagemin');
 
     // Task(s)
-    grunt.registerTask('default', ['jshint', 'watch']);
+    grunt.registerTask('default', ['concurrent:dev']);
     grunt.registerTask('dev', ['concurrent:dev']);
+    grunt.registerTask('live', ['cssmin']);
 
 };

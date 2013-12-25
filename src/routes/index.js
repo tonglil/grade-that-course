@@ -8,7 +8,7 @@ module.exports = function(app) {
     app.get('/', function(req, res) {
         res.render('index', {
             title: '(don\'t) take that course',
-            subtitle: 'ubc edition',
+            subtitle: 'transparent course reviews - ubc edition',
             faculties: [
                 'arts',
                 'engineering',
@@ -25,8 +25,9 @@ module.exports = function(app) {
                 'easy',
                 'hard',
                 'fun',
-                'useful',
-                'prof. warning'
+                'useful or interesting',
+                'prof. warning',
+                'ta warning'
             ]
             //menu: [
                 //'scrape',
@@ -47,8 +48,8 @@ module.exports = function(app) {
 
     app.post('/index-search', function(req, res) {
         var course = req.body.course.toUpperCase();
-        var getCourseCode = require('../controllers/List').getCourseCode;
-        getCourseCode(course, function(err, result) {
+        var searchCourseCode = require('../controllers/List').searchCourseCode;
+        searchCourseCode(course, function(err, result) {
             if (err) {
                 return res.json(500, 'Database error');
             }

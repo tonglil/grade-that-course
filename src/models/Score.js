@@ -12,7 +12,8 @@ module.exports = function(DB, Type) {
         hard: { type: Type.INTEGER },
         fun: { type: Type.INTEGER },
         useful: { type: Type.INTEGER },
-        profWarn: { type: Type.INTEGER }
+        prof: { type: Type.INTEGER },
+        ta: { type: Type.INTEGER }
     });
 
     return Score;

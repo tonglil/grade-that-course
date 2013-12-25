@@ -10,7 +10,8 @@ module.exports = function(DB, Type) {
             type: Type.STRING,
             unique: true
         },
-        subject: { type: Type.STRING },
+        //TODO: this should be an association? (plus faculty association?)
+        //subject: { type: Type.STRING },
         //can include characters
         number: { type: Type.STRING },
         //canonical name

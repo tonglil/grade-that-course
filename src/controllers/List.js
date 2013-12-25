@@ -143,14 +143,15 @@ function getCourse(subjectCode, courseNumber, callback) {
     }
 }
 
-//Make available via require().getCourse
-module.exports.getCourseCode = getCourseCode;
+//Make available via require().searchCourseCode
+module.exports.searchCourseCode = searchCourseCode;
+var async = require('async');
 
 //Object to fetch a subject's courses from the database
 //TODO: (dealing with diffs since course might get updated often? or only if use new? does new defeat cache?)
 //@par: string          subject code + course number
 //@par: function        callback with error, courses
-function getCourseCode(courseCode, callback) {
+function searchCourseCode(courseCode, callback) {
     var callbackOn = false;
 
     if (callback && typeof callback == 'function') {
@@ -163,18 +164,27 @@ function getCourseCode(courseCode, callback) {
     } else {
         Course.findAll({
             where: ['code LIKE \'%' + courseCode + '%\''],
-            limit: 10
+            limit: 10,
+            order: 'code ASC'
         }).success(function(courses) {
             if (courses) {
                 var courseList = [];
-                courses.forEach(function(dbCourse) {
-                    var course = dbCourse.values;
-                    delete course.createdAt;
-                    delete course.updatedAt;
-                    courseList.push(course);
+                async.forEach(courses, function(dbCourse, callback){
+                    dbCourse.getSubject().success(function(subject) {
+                        var course = dbCourse.values;
+                        delete course.createdAt;
+                        delete course.updatedAt;
+                        course.subject = subject.values;
+                        delete course.subject.createdAt;
+                        delete course.subject.updatedAt;
+                        courseList.push(course);
+                        callback();
+                    });
+                }, function(err) {
+                    if (err && callbackOn) return callback(err, null);
+                    cache.put(courseCode + 'List', courseList, cacheTime.min3);
+                    if (callbackOn) return callback(null, courseList);
                 });
-                cache.put(courseCode + 'List', courseList, cacheTime.min3);
-                if (callbackOn) return callback(null, courseList);
             } else {
                 //TODO: proper way of handling?
                 if (callbackOn) return callback('Error: no course found.', null);

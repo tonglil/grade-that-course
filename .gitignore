@@ -15,3 +15,5 @@ build
 node_modules
 
 .nodemonignore
+
+src/public/css/style.css

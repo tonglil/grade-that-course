@@ -13,15 +13,22 @@
  */
 
 body {
-    background: url('img/bg.png');
+    /*background: url('img/bg.png');*/
+    background: #DDDDDD;
+    font-family: 'Helvetica', Arial;
 }
 
 header {
-    background: #262937;
+    /*background: #262937;*/
+    background: linear-gradient(30deg, #007AFF, #FF3A2D) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    /*background: linear-gradient(30deg, #007AFF, #ff2d55) repeat scroll 0 0 rgba(0, 0, 0, 0);*/
+    /*background: linear-gradient(25deg, #1ad6fd 35%, #1d62f0) repeat scroll 0 0 rgba(0, 0, 0, 0);*/
+    /*background: linear-gradient(45deg, #00D689 30%, #32B1C2) repeat scroll 0 0 rgba(0, 0, 0, 0);*/
+    /*background: linear-gradient(45deg, #262937 45%, #CD321D) repeat scroll 0 0 rgba(0, 0, 0, 0);*/
 }
 
 .content {
-    width: 100%;
+    width: 90%;
     max-width: 960px;
     margin: 0 auto;
 }
@@ -33,20 +40,22 @@ header .content {
 header .title {
     font-family: 'NexaBold', Arial, sans-serif;
     font-size: 64px;
-    /*text-shadow: 2px 2px 3px #000000;*/
-    /*color: #fffedf;*/
-    color: #FF9900;
+    /*text-shadow: 2px 2px 3px #ffffff;*/
+    /*color: #DD463A;*/
+    /*color: #FF9900;*/
+    /*color: #00B763;*/
+    color: #ffffff;
 }
 
 header .subtitle {
     font-family: 'NexaLight', Arial, sans-serif;
     font-size: 32px;
     /*text-shadow: 2px 2px 3px #000000;*/
-    color: #fffedf;
+    color: #ffffff;
 }
 
 .content.search {
-    padding: 32px 0;
+    margin: 32px auto;
 }
 
 input#index-search {
@@ -58,26 +67,46 @@ input#index-search {
 }
 
 .course {
-    margin: 8px 0;
-    padding: 8px;
-    background-color: rgb(255, 255, 255);
+    margin: 12px 0;
+    padding: 12px;
+    background-color: #ffffff;
     border-radius: 4px;
+    color: #262937;
 }
 
-.course-name {
-    margin-left: 16px;
-}
-
-.meta {
-    margin: 16px 0 0;
-}
-
-.score {
-    margin: 16px 0 0;
+.main-info {
+    margin: 0 0 12px 0;
     overflow: hidden;
 }
 
-.score li {
+.main-info li {
+    font-family: 'NexaBold';
+    font-size: 24px;
+    line-height: 30px;
     float: left;
-    width: 12%;
 }
+
+.course-code {
+    margin-right: 36px;
+}
+
+.meta, .score {
+    /*margin: 3px 0 0;*/
+    overflow: hidden;
+}
+
+.meta {
+    margin-top: 12px;
+}
+
+.meta li:hover {
+    color: #000000;
+    /*background: #FF9900;*/
+    background: #FFD700;
+}
+
+.score li:hover {
+    color: #000000;
+    background: #FFD700;
+}
+
