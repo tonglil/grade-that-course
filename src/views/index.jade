@@ -8,7 +8,7 @@ block content
   div.container
       div.content.search
         form(action='index-search', method='post', autocomplete='off')
-          input(id='index-search', class='text-center', type='text', name='course', placeholder='search for a course...')
+          input(id='index-search', class='text-center', type='text', name='course', autofocus="autofocus", placeholder='search for a course...')
       div#search-results.content
   div.container
       div.content.other
@@ -23,3 +23,7 @@ block content
               li
                   a(href='#' + category)= category
           - })
+
+block script
+    script(type='text/javascript', src='/js/searchController.js')
+    script(type='text/javascript', src='/js/voteButton.js')

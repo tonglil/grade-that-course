@@ -7,7 +7,8 @@ var log     = require('../controllers/logging').log;
 module.exports = function(app) {
     app.get('/', function(req, res) {
         res.render('index', {
-            title: '(don\'t) take that course',
+            //title: '(don\'t) take that course',
+            title: 'grade that course',
             subtitle: 'transparent course reviews - ubc edition',
             faculties: [
                 'arts',
@@ -45,6 +46,7 @@ module.exports = function(app) {
 
     require('./scrape')(app);
     require('./list')(app);
+    require('./voting')(app);
 
     app.post('/index-search', function(req, res) {
         var course = req.body.course.toUpperCase();
