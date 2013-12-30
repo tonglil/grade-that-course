@@ -16,7 +16,7 @@ var models = [
     'Faculty',
     'Subject',
     'Course',
-    'Score',
+    //'Score',
     'User'
 ];
 
@@ -26,8 +26,14 @@ models.forEach(function(model) {
 
 //Define relationships
 
-data.Course.hasOne(data.Score, { as: 'Scores' });
-data.Score.belongsTo(data.Course, { as: 'Course' });
+/*
+ *data.Course.hasOne(data.Score, {
+ *    as: 'Score'
+ *});
+ *data.Score.belongsTo(data.Course, {
+ *    as: 'Course'
+ *});
+ */
 
 data.Subject.hasMany(data.Course, { as: 'Courses' });
 data.Course.belongsTo(data.Subject, { as: 'Subject' });

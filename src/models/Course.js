@@ -17,7 +17,40 @@ module.exports = function(DB, Type) {
         //canonical name
         name: { type: Type.STRING },
         description: { type: Type.TEXT },
-        credits: { type: Type.INTEGER }
+        credits: { type: Type.INTEGER },
+        //counters to track votes
+        take: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        pass: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        easy: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        hard: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        fun: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        useful: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        prof: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        ta: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        }
     });
 
     return Course;

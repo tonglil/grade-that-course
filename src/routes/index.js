@@ -18,7 +18,7 @@ module.exports = function(app) {
                 'lfs',
                 'sauder',
                 'sciences',
-                'more...'
+                'other...'
             ],
             scoring: [
                 'best',
@@ -27,8 +27,8 @@ module.exports = function(app) {
                 'hard',
                 'fun',
                 'useful or interesting',
-                'prof. warning',
-                'ta warning'
+                'poor Profs',
+                'poor TAs'
             ]
             //menu: [
                 //'scrape',
@@ -51,10 +51,12 @@ module.exports = function(app) {
     app.post('/index-search', function(req, res) {
         var course = req.body.course.toUpperCase();
         var searchCourseCode = require('../controllers/List').searchCourseCode;
+
         searchCourseCode(course, function(err, result) {
             if (err) {
                 return res.json(500, 'Database error');
             }
+            log(result);
             return res.render('search-response', {
                 courses: result
             });

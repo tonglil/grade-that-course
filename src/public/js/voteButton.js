@@ -13,7 +13,9 @@ $(document).ready(function() {
                 type: type
             }
         }).done(function(results) {
-            console.log('success?');
+            console.log('success');
+            //increment the type's number
+            //console.log($(this).text());
         });
     });
 });

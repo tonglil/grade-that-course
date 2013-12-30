@@ -6,14 +6,38 @@
 module.exports = function(DB, Type) {
     var Score = DB.define("Score", {
         //counters to track votes
-        take: { type: Type.INTEGER },
-        pass: { type: Type.INTEGER },
-        easy: { type: Type.INTEGER },
-        hard: { type: Type.INTEGER },
-        fun: { type: Type.INTEGER },
-        useful: { type: Type.INTEGER },
-        prof: { type: Type.INTEGER },
-        ta: { type: Type.INTEGER }
+        take: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        pass: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        easy: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        hard: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        fun: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        useful: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        prof: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        },
+        ta: {
+            type: Type.INTEGER,
+            defaultValue: 0
+        }
     });
 
     return Score;

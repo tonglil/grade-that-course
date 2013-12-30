@@ -4,6 +4,11 @@
 
 var log     = require('../controllers/logging').log;
 
+var models  = require('../models');
+var Sequelize = models.Sequelize;
+var Course  = models.Course;
+//var Score  = models.Score;
+
 module.exports = function(app) {
     app.post('/vote/course', voteType);
 };
@@ -28,11 +33,33 @@ function voteCourseType(courseCode, type, callback) {
     }
 
     log(courseCode, type);
-    //find course
-    //increment score type for course
 
-    //if (err && callbackOn) return callback(err, null);
-    //cache.put(courseCode + 'List', courseList, cacheTime.min3);
-    if (callbackOn) return callback(null, 'success');
+    Course.find({
+        where: { code: courseCode }
+    }).success(function(dbCourse) {
+        //increment score type for course
+        dbCourse.increment([type], 1);
+        dbCourse.save();
+        if (callbackOn) return callback(null);
 
+        /*
+         *dbCourse.getScore().success(function(courseScore) {
+         *    if (courseScore) {
+         *        courseScore.increment([type], 1);
+         *        if (callbackOn) return callback(null);
+         *    } else {
+         *        Score.create().success(function(courseScore) {
+         *            courseScore.increment([type], 1);
+         *            dbCourse.setScore(courseScore);
+         *            if (callbackOn) return callback(null);
+         *        });
+         *    }
+         *});
+         */
+
+        //cache.put(courseCode, course, cacheTime.min3);
+        //if (callbackOn) return callback(null, 'success thing here.........');
+    }).error(function(err) {
+        if (callbackOn) return callback(err, null);
+    });
 }
