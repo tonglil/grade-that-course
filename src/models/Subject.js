@@ -12,6 +12,14 @@ module.exports = function(DB, Type) {
         },
         //canonical name
         name: { type: Type.STRING }
+    }, {
+        associate: function(models) {
+            Subject.hasMany(models.Course, { as: 'Courses' });
+            Subject.belongsTo(models.Faculty, { as: 'Faculty' });
+        },
+        instanceMethods: {
+            //getFaculty
+        }
     });
 
     return Subject;

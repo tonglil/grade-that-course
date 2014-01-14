@@ -1,19 +1,31 @@
 - courses.forEach(function(course) {
     div.course
         ul.main-info
-            li.course-code= course.code
-            li.course-name= course.name
+            li.course-code
+                a(href='ubc/course/' + course.code)= course.code
+            li.course-name
+                a(href='ubc/course/' + course.code)= course.name
         p.course-description= course.description
         ul.meta
-            li.course-subject.button.bg-dark-blue= 'Subject: '.toUpperCase() + course.subject.name + ' (' + course.subject.code + ')'
-            li.course-credits.button.bg-dark-blue= 'Credits: '.toUpperCase() + course.credits
+            a(href='ubc/subject/' + course.subject.code)
+                li(class='course-subject button bg-dark-blue')= 'Subject: '.toUpperCase() + course.subject.name + ' (' + course.subject.code + ')'
+            a(href='ubc/credits/' + course.credits)
+                li(class='course-credits button bg-dark-blue')= 'Credits: '.toUpperCase() + course.credits
         ul(class='score', course=course.code)
-            li(type='take', class='button bg-green')= 'take: 5'.toUpperCase()
-            li(type='pass', class='button bg-green')= 'pass: 3'.toUpperCase()
-            li(type='easy', class='button bg-green')= 'easy: 7'.toUpperCase()
-            li(type='hard', class='button bg-green')= 'hard: 3'.toUpperCase()
-            li(type='fun', class='button bg-green')= 'fun: 1'.toUpperCase()
-            li(type='useful', class='button bg-green')= 'useful / interesting: 4'.toUpperCase()
-            li(type='prof', class='button bg-green')= 'poor profs: 0'.toUpperCase()
-            li(type='ta', class='button bg-green')= 'poor TAs: 0'.toUpperCase()
+            li(type='take', class='vote button bg-green')= 'take: '.toUpperCase()
+                span(class='counter')= course.take
+            li(type='pass', class='vote button bg-green')= 'pass: '.toUpperCase()
+                span(class='counter')= course.pass
+            li(type='easy', class='vote button bg-green')= 'easy: '.toUpperCase()
+                span(class='counter')= course.easy
+            li(type='hard', class='vote button bg-green')= 'hard: '.toUpperCase()
+                span(class='counter')= course.hard
+            li(type='fun', class='vote button bg-green')= 'fun: '.toUpperCase()
+                span(class='counter')= course.fun
+            li(type='useful', class='vote button bg-green')= 'useful / interesting: '.toUpperCase()
+                span(class='counter')= course.useful
+            li(type='prof', class='vote button bg-green')= 'poor profs: '.toUpperCase()
+                span(class='counter')= course.prof
+            li(type='ta', class='vote button bg-green')= 'poor TAs: '.toUpperCase()
+                span(class='counter')= course.ta
 - })

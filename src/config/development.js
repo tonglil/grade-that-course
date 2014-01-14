@@ -5,8 +5,10 @@
 module.exports = {
     database: {
         name: 'course_voter',
-        username: 'course_voter_user',
-        password: 'course_voter_pw',
+        //username: 'course_voter_user',
+        //password: 'course_voter_pw',
+        username: 'root',
+        password: 'root',
         options: {
             //host: localhost,
             //port: 3306,
@@ -16,13 +18,16 @@ module.exports = {
             //storage: ':memory:',
             //omitNull: false,
             //native: false,
-            //defined: {},
-            //sync: { force: true },
+            define: {
+                freezeTableName: true,
+            },
+            //sync: { force: false },
             //syncOnAssociation: true,
             pool: { maxConnections: 5, maxIdleTime: 30 },
             //language: 'en',
             //protocol: null,
-            dialect: 'postgres'
+            //dialect: 'postgres'
+            dialect: 'mysql'
         }
     },
     logging: {

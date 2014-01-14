@@ -65,6 +65,7 @@ function getSubjectCourses(subjectCode, callback) {
     if (cached) {
         if (callbackOn) return callback(null, cached);
     } else {
+        //TODO: this needs to be reworked...
         Course.findAll({
             where: { subject: subjectCode }
         }).success(function(courses) {
@@ -112,7 +113,7 @@ function getSubjectCourses(subjectCode, callback) {
 //Make available via require().getCourse
 module.exports.getCourse = getCourse;
 
-//Object to fetch a subject's courses from the database
+//Object to fetch a course from the database
 //TODO: (dealing with diffs since course might get updated often? or only if use new? does new defeat cache?)
 //@par: string          subject code
 //@par: string          course number

@@ -275,19 +275,6 @@ function courseScraper(subjectCode, courseNumber, callback) {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Make available via require().courseBulkScraper
 module.exports.courseBulkScraper = courseBulkScraper;
 
@@ -337,7 +324,10 @@ function courseBulkScraper(courses, callback) {
 
     function start(courses) {
         courses.forEach(function(course, i) {
-            queue.push(course);
+            course.getSubject().success(function(subject) {
+                course.subject = subject.code;
+                queue.push(course);
+            });
         });
     }
 

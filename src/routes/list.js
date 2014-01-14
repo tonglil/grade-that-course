@@ -13,6 +13,7 @@ module.exports = function(app) {
     app.get('/list/all', listAll);
     app.get('/list/subject/:subject', listSubject);
     app.get('/list/course/:subject/:number', listCourse);
+    app.get('/ubc/subject/:subject', listSubject);
 };
 
 function listAll(req, res) {

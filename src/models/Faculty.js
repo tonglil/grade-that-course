@@ -14,6 +14,11 @@ module.exports = function(DB, Type) {
             type: Type.STRING,
             unique: true
         }
+    }, {
+        associate: function(models) {
+            Faculty.hasMany(models.Subject, { as: 'Subjects' });
+            Faculty.hasMany(models.Course, { as: 'Courses' });
+        }
     });
 
     return Faculty;

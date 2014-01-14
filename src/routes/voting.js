@@ -37,9 +37,10 @@ function voteCourseType(courseCode, type, callback) {
     Course.find({
         where: { code: courseCode }
     }).success(function(dbCourse) {
+        //TODO: check if user has voted for this type & course already
+        //
         //increment score type for course
         dbCourse.increment([type], 1);
-        dbCourse.save();
         if (callbackOn) return callback(null);
 
         /*

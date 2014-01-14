@@ -66,7 +66,7 @@ function scrapeAll(req, res) {
 
 
 
-var Scraper = require('../controllers/Scraper');
+var scraper = require('../controllers/scraper');
 
 //Scrapes a specific course's information
 //@par: subject     subject code
@@ -78,9 +78,9 @@ function scrapeCourse(req, res) {
     response.message = 'Scrapping ' + code + number + '\'s details';
     logv(response);
 
-    var CourseScraper = Scraper.CourseScraper;
+    var courseScraper = scraper.courseScraper;
 
-    CourseScraper(code, number, function(err, result) {
+    courseScraper(code, number, function(err, result) {
         log(err);
         logv(result);
 
@@ -91,21 +91,14 @@ function scrapeCourse(req, res) {
 
 
 
-//Scrapes all courses in a subject's information
-function scrapeCoursesback(req, res) {
-    var response = {};
-    response.message = 'Scraping all courses\' information';
-    logv(response);
+//Scrapes all courses in a subject's informationcourseScraper    var courseBulkScraper = scraper.courseBulkScraper;
+    //var async = require('async');
 
-    var CourseScraper = Scraper.CourseScraper;
-    var CourseBulkScraper = Scraper.CourseBulkScraper;
-    var async = require('async');
-
-    /*
+    /*courseScraper
      *Subject.findAll({
      *    include: [Course]
      *}).success(function(subjects) {
-     *    var queue = async.queue(CourseBulkScraper, 5);
+     *    var queue = async.queue(courseBulkScraper, 5);
      *    for (var i = 0; i < subjects.length; i++) {
      *        for (var j = 0; j < subjects[i].courses.length; j++) {
      *            queue.push(subjects[i].courses[j]);
@@ -125,7 +118,7 @@ function scrapeCoursesback(req, res) {
      *        Course.findAll({
      *            //where: { subject: subject }
      *        //}).success(function(courses) {
-     *            //var queue = async.queue(CourseBulkScraper, 5);
+     *            //var queue = async.queue(courseBulkScraper, 5);
      *            //for (var j = 0; j < courses.length; j++) {
      *                //var course = courses[j];
      *                //if (!course.credits || !course.description) {
@@ -153,7 +146,7 @@ function scrapeCoursesback(req, res) {
  *            var course = subjects[i].courses;
  *            while (j < subjects[i].courses.length) {
  *            //subject[i].courses.forEach(function(course, i) {
- *                CourseScraper(subjects[i].code, course[j].values.number, function(err, result) {
+ *                courseScraper(subjects[i].code, course[j].values.number, function(err, result) {
  *                    log(err);
  *                    log(result);
  *
@@ -170,7 +163,6 @@ function scrapeCoursesback(req, res) {
  *        return res.json(400, response);
  *    });
  */
-}
 
 
 //Scrapes all courses in a subject's information
@@ -179,7 +171,7 @@ function scrapeCourses(req, res) {
     response.message = 'Scraping all courses\' information';
     logv(response);
 
-    var CourseBulkScraper = Scraper.CourseBulkScraper;
+    var courseBulkScraper = scraper.courseBulkScraper;
 
     Course.findAll({
         where: {
@@ -190,7 +182,7 @@ function scrapeCourses(req, res) {
         }
     }).success(function(courses) {
         //TODO: add emitter to bulk?
-        CourseBulkScraper(courses, function() {
+        courseBulkScraper(courses, function() {
             return res.json(response);
         });
     }).error(function(err) {
@@ -212,12 +204,12 @@ function scrapeSubjects(req, res) {
     response.message = 'Scraping all subjects';
     logv(response);
 
-    var SubjectScraper = Scraper.SubjectScraper;
+    var subjectScraper = scraper.subjectScraper;
 
     //TODO: use for & chainer?
     Subject.findAll().success(function(subjects) {
         subjects.forEach(function(subject, i) {
-            SubjectScraper(subject.values.code, function(err, result) {
+            subjectScraper(subject.values.code, function(err, result) {
                 log(err);
                 logv(result);
             });
@@ -238,9 +230,9 @@ function scrapeSubject(req, res) {
     response.message = 'Scrapping ' + code + '\'s courses';
     logv(response);
 
-    var SubjectScraper = Scraper.SubjectScraper;
+    var subjectScraper = scraper.subjectScraper;
 
-    SubjectScraper(code, function(err, result) {
+    subjectScraper(code, function(err, result) {
         log(err);
         logv(result);
 
@@ -254,9 +246,9 @@ function scrapeList(req, res) {
     response.message = 'Scrapping the directory';
     logv(response);
 
-    var ListScraper = Scraper.ListScraper;
+    var listScraper = scraper.listScraper;
 
-    ListScraper(function(err, result) {
+    listScraper(function(err, result) {
         log(err);
         logv(result);
 
