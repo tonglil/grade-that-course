@@ -3,28 +3,32 @@
  *ex: 210
  */
 
-var Sequelize = require('sequelize');
-
 module.exports = function(DB, Type) {
     var Course = DB.define("Course", {
-        //subject + number
-        code: {
-            type: Type.STRING,
-            unique: true
+        number: {
+            //can include characters
+            type: Type.STRING
         },
-        //TODO: this should be an association? (plus faculty association?)
-        //subject: { type: Type.STRING },
-        //can include characters
-        number: { type: Type.STRING },
-        //canonical name
-        name: { type: Type.STRING },
-        description: { type: Type.TEXT },
-        credits: { type: Type.INTEGER },
-        subject: {
+        name: {
+            //canonical name
+            type: Type.STRING
+        },
+        description: {
+            type: Type.TEXT
+        },
+        credits: {
+            type: Type.INTEGER
+        },
+        SubjectId: {
             type: Type.STRING,
-            //references: 'Subject',
-            //referencesKey: 'code'
-        }
+            references: 'Subject',
+            referencesKey: 'code'
+        },
+        //FacultyId: {
+            //type: Type.STRING,
+            //references: 'Faculty',
+            //referencesKey: 'shortName'
+        //}
     }, {
         associate: function(models) {
             Course.belongsTo(models.Subject, {
@@ -32,57 +36,65 @@ module.exports = function(DB, Type) {
                 //foreignKeyConstraint: true,
                 //foreignKey: 'code'
             });
-            Course.belongsTo(models.Faculty, { as: 'Faculty' });
+            Course.belongsTo(models.Faculty, {
+                as: 'Faculty'
+            });
         },
         classMethods: {
-            getCourse: function(Subject, subjectCode, courseNumber, callback) {
-                //var subjectRegex = /[A-Z]+/;
-                //var numberRegex = /[0-9]+/;
-                //var subjectCode = courseCode.toUpperCase().match(subjectRegex)[0];
-                //var courseNumber = courseCode.match(numberRegex)[0];
+            getCourse: function(subject, number, callback) {
+                var search = {};
+                if (subject) search.SubjectId = subject;
+                if (number) search.number = number;
 
-                var callbackOn = false;
-
-                if (callback && typeof callback == 'function') {
-                    callbackOn = true;
-                }
+                this.find({
+                    where: search
+                }).success(function(course) {
+                    if (course) return callback(null, course);
+                    return callback('no course found');
+                }).error(function(err) {
+                    return callback(err);
+                });
+            },
+            getCourses: function(subject, number, callback) {
+                var search = {};
+                if (subject) search.SubjectId = subject;
+                if (number) search.number = number;
 
                 this.findAll({
-                    where: { number: courseNumber },
-                    include: [{
-                        model: Subject,
-                        as: 'Subject'
-                    }]
+                    where: search
                 }).success(function(courses) {
-                    var course = Sequelize.Utils._.find(courses, function(chr) {
-                        return chr.subject.code == subjectCode;
-                    });
-
-                    if (course) {
-                        if (callbackOn) return callback(null, course);
-                    } else {
-                        if (callbackOn) return callback('course not found');
-                    }
+                    return callback(null, courses);
+                }).error(function(err) {
+                    return callback(err);
+                });
+            },
+            findCourses: function(subject, number, callback) {
+                this.findAll({
+                    where: ['number LIKE \'' + number + '%\' and SubjectId LIKE \'%' + subject + '%\''],
+                    limit: 10,
+                    order: 'SubjectId ASC, number ASC'
+                }).success(function(courses) {
+                    return callback(null, courses);
+                }).error(function(err) {
+                    return callback(err);
                 });
             }
         },
         instanceMethods: {
             getCourseCode: function() {
-                return [this.subject.code, this.number].join('');
+                return [this.SubjectId, this.number].join(' ');
             },
-            getSubjectInfo: function() {
-                return this.subject;
-            },
-            getSubjectCode: function() {
-                return this.subject.code;
-            },
-            getFacultyName: function() {
-                //return this.faculty.name;
-                //this.subject.getFaculty().success(function(faculty) {
-                    //console.log(faculty.values);
-                    //return faculty.values;
-                //});
+            clean: function() {
+                var course = this.values;
+                delete course.createdAt;
+                delete course.updatedAt;
+                return course;
             }
+            //getSubjectName: function(callback) {
+                //this.getSubject().success(function(subject) {
+                    //return callback(subject.name);
+                //});
+            //},
         }
 
     });

@@ -11,8 +11,9 @@ $(document).ready(function() {
         //TODO:
         //sanitize input
         //clean this code up
-        var query = $(this).val();
-        if (query.length > 2) {
+        var query = $(this).val().trim();
+        var length = query.length;
+        if (length > 2 && length < 10) {
             if (prevQuery === query) {
                 if (results !== null) {
                     hideMenu();

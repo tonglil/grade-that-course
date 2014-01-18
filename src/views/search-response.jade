@@ -2,9 +2,9 @@
     div.course
         ul.main-info
             li.course-code
-                a(href='ubc/course/' + course.code)= course.code
+                a(href='ubc/course/' + course.subject.code + '/' + course.number)= course.subject.code + course.number
             li.course-name
-                a(href='ubc/course/' + course.code)= course.name
+                a(href='ubc/course/' + course.subject.code + '/' + course.number)= course.name
         p.course-description= course.description
         ul.meta
             a(href='ubc/subject/' + course.subject.code)

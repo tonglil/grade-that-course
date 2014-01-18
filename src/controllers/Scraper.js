@@ -60,33 +60,62 @@ function subjectScraper(subjectCode, callback) {
             if (callbackOn) return callback(err, result);
         }
 
-        courses.forEach(function(item) {
-            // TODO: can we move creating/updating course to a function in the model?
-            // will this become strained? will this need to be changed to find => update/save?
-            // do we need to querychain this using a regular for loop, where find or create is run by chainer?
-            Course.findOrCreate({
-                code: subjectCode + item.number
-            }).success(function(course) {
-                course.updateAttributes({
-                    subject: subjectCode,
-                    number: item.number,
-                    name: item.name
+        Subject.find({
+            where: {
+                code: subjectCode
+            }
+        }).success(function(subject) {
+            courses.forEach(function(item) {
+                // TODO: can we move creating/updating course to a function in the model?
+                // will this become strained? will this need to be changed to find => update/save?
+                // do we need to querychain this using a regular for loop, where find or create is run by chainer?
+                Course.getCourse(subjectCode, item.number, function(err, course) {
+                    if (!course) {
+                        course = Course.build({
+                            number: item.number,
+                            name: item.name
+                        }).save().success(function(course) {
+                            course.setSubject(subject).error(function(err) {
+                                return callback(err);
+                            });
+                        });
+                    } else {
+                        course.updateAttributes({
+                            number: item.number,
+                            name: item.name
+                        }).setSubject(subject).error(function(err) {
+                            return callback(err);
+                        });
+                    }
                 });
 
-                Subject.find({
-                    where: { code: subjectCode }
-                }).success(function(subject) {
-                    course.setSubject(subject).error(function(err) {
-                        result.statusCode = 500;
-                        if (callbackOn) return callback(err, result);
-                    });
-                }).error(function(err) {
-                    result.statusCode = 500;
-                    if (callbackOn) return callback(err, result);
-                });
-            }).error(function(err) {
-                result.statusCode = 500;
-                if (callbackOn) return callback(err, result);
+
+/*
+ *                Course.findOrCreate({
+ *                    number: item.number,
+ *                    //do need to set subjectid here?
+ *                    SubjectId: subjectCode
+ *                }).success(function(course) {
+ *                    course.updateAttributes({
+ *                        name: item.name
+ *                    });
+ *
+ *                    Subject.find({
+ *                        where: { code: subjectCode }
+ *                    }).success(function(subject) {
+ *                        course.setSubject(subject).error(function(err) {
+ *                            result.statusCode = 500;
+ *                            if (callbackOn) return callback(err, result);
+ *                        });
+ *                    }).error(function(err) {
+ *                        result.statusCode = 500;
+ *                        if (callbackOn) return callback(err, result);
+ *                    });
+ *                }).error(function(err) {
+ *                    result.statusCode = 500;
+ *                    if (callbackOn) return callback(err, result);
+ *                });
+ */
             });
         });
 
@@ -293,7 +322,7 @@ function courseBulkScraper(courses, callback) {
             if (callbackOn) return callback();
         }
 
-        var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=3&dept=' + course.subject + '&course=' + course.number;
+        var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=3&dept=' + course.SubjectId + '&course=' + course.number;
 
         request(url, function(err, response, body) {
             if (err || !response || response.statusCode !== 200) {
@@ -308,7 +337,7 @@ function courseBulkScraper(courses, callback) {
             $na = $body.find('.content.expand').text().trim().indexOf('no longer offered');
 
             if ($na != -1) {
-                log('Course ' + course.code + ' had no data');
+                log('Course ' + course.SubjectId + course.number + ' had no data');
                 if (callbackOn) return callback();
             }
 
@@ -323,9 +352,9 @@ function courseBulkScraper(courses, callback) {
     }, 10);
 
     function start(courses) {
-        courses.forEach(function(course, i) {
+        courses.forEach(function(course) {
             course.getSubject().success(function(subject) {
-                course.subject = subject.code;
+                //course.subject = subject.code;
                 queue.push(course);
             });
         });

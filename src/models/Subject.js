@@ -5,20 +5,50 @@
 
 module.exports = function(DB, Type) {
     var Subject = DB.define("Subject", {
-        //subject
         code: {
+            //subject
             type: Type.STRING,
-            unique: true
+            unique: true,
+            primaryKey: true,
         },
-        //canonical name
-        name: { type: Type.STRING }
+        name: {
+            //canonical name
+            type: Type.STRING
+        }
     }, {
         associate: function(models) {
             Subject.hasMany(models.Course, { as: 'Courses' });
             Subject.belongsTo(models.Faculty, { as: 'Faculty' });
         },
+        classMethods: {
+            getCourses: function(subject, callback) {
+                var search = {};
+                if (subject) search.code = subject;
+
+                this.find({
+                    where: search
+                }).success(function(subject) {
+                    if (subject) {
+                        subject.getCourses().success(function(courses) {
+                            return callback(null, courses);
+                        }).error(function(err) {
+                            return callback(err);
+                        });
+                    } else {
+                        return callback('subject not found');
+                    }
+                }).error(function(err) {
+                    return callback(err);
+                });
+            }
+        },
         instanceMethods: {
-            //getFaculty
+            clean: function() {
+                var subject = this.values;
+                delete subject.createdAt;
+                delete subject.updatedAt;
+                return subject;
+            }
         }
     });
 
