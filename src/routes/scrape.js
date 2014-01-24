@@ -2,9 +2,6 @@
  *Scraping endpoints
  */
 
-var log     = require('../controllers/logging').log;
-var logv    = require('../controllers/logging').logVerbose;
-
 var models  = require('../models');
 var Sequelize = models.Sequelize;
 var Course  = models.Course;
@@ -29,7 +26,7 @@ function scrapeAll(req, res) {
 
     Subject.findAll().success(function(subjects) {
         subjects.forEach(function(subject) {
-            log(subject.code);
+            console.log(subject.code);
         });
     });
 
@@ -76,13 +73,13 @@ function scrapeCourse(req, res) {
     var number = req.params.number;
     var response = {};
     response.message = 'Scrapping ' + code + number + '\'s details';
-    logv(response);
+    console.log(response);
 
     var courseScraper = scraper.courseScraper;
 
     courseScraper(code, number, function(err, result) {
-        log(err);
-        logv(result);
+        console.log(err);
+        console.log(result);
 
         return res.json(response);
     });
@@ -104,9 +101,9 @@ function scrapeCourse(req, res) {
      *            queue.push(subjects[i].courses[j]);
      *        }
      *    }
-     *    log('yes, done pushing');
+     *    console.log('yes, done pushing');
      *    queue.drain = function() {
-     *        log("DONE!!!!!");
+     *        console.log("DONE!!!!!");
      *    };
      *});
      */
@@ -131,7 +128,7 @@ function scrapeCourse(req, res) {
      *            //log('done for a course');
      *        });
      *    }
-     *    log('done for all subjects');
+     *    console.log('done for all subjects');
      *});
      */
 
@@ -169,7 +166,7 @@ function scrapeCourse(req, res) {
 function scrapeCourses(req, res) {
     var response = {};
     response.message = 'Scraping all courses\' information';
-    logv(response);
+    console.log(response);
 
     var courseBulkScraper = scraper.courseBulkScraper;
 
@@ -186,7 +183,7 @@ function scrapeCourses(req, res) {
             return res.json(response);
         });
     }).error(function(err) {
-        log(err);
+        console.log(err);
         return res.json(400, response);
     });
 }
@@ -202,7 +199,7 @@ function scrapeCourses(req, res) {
 function scrapeSubjects(req, res) {
     var response = {};
     response.message = 'Scraping all subjects';
-    logv(response);
+    console.log(response);
 
     var subjectScraper = scraper.subjectScraper;
 
@@ -210,14 +207,14 @@ function scrapeSubjects(req, res) {
     Subject.findAll().success(function(subjects) {
         subjects.forEach(function(subject, i) {
             subjectScraper(subject.values.code, function(err, result) {
-                log(err);
-                logv(result);
+                console.log(err);
+                console.log(result);
             });
         });
 
         return res.json(response);
     }).error(function(err) {
-        log(err);
+        console.log(err);
         return res.json(400, response);
     });
 }
@@ -228,13 +225,13 @@ function scrapeSubject(req, res) {
     var code = req.params.subject;
     var response = {};
     response.message = 'Scrapping ' + code + '\'s courses';
-    logv(response);
+    console.log(response);
 
     var subjectScraper = scraper.subjectScraper;
 
     subjectScraper(code, function(err, result) {
-        log(err);
-        logv(result);
+        console.log(err);
+        console.log(result);
 
         return res.json(response);
     });
@@ -244,13 +241,13 @@ function scrapeSubject(req, res) {
 function scrapeList(req, res) {
     var response = {};
     response.message = 'Scrapping the directory';
-    logv(response);
+    console.log(response);
 
     var listScraper = scraper.listScraper;
 
     listScraper(function(err, result) {
-        log(err);
-        logv(result);
+        console.log(err);
+        console.log(result);
 
         return res.json(response);
     });

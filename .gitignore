@@ -12,8 +12,10 @@ logs
 results
 build
 
-node_modules
+node_modules/
 .nodemonignore
 
 src/public/css/*.css
 !src/public/css/style.css
+
+srcbak/

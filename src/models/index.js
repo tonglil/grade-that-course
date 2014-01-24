@@ -2,22 +2,18 @@
  *Model and database initiation
  */
 
-var Sequelize   = require('sequelize');
-var config      = require('../config').database;
+var Sequelize = require('sequelize');
+var config = require('../config').database;
 
 var db = new Sequelize(config.name, config.username, config.password, config.options);
 
-var data = {
-};
+var data = {};
 
 var models = [
     'Faculty',
     'Subject',
     'Course',
-    //'Score',
-    //'Trainer',
-    //'Series',
-    //'Video',
+    'Score',
     'User'
 ];
 
@@ -33,21 +29,5 @@ Object.keys(data).forEach(function(modelName) {
 
 data.Sequelize = Sequelize;
 data.db = db;
-
-//data.Trainer.hasMany(data.Series);
-//data.Series.belongsTo(data.Trainer);
-
-//data.Series.hasMany(data.Video);
-//data.Video.belongsTo(data.Series);
-
-//Define relationships
-/*
- *data.Course.hasOne(data.Score, {
- *    as: 'Score'
- *});
- *data.Score.belongsTo(data.Course, {
- *    as: 'Course'
- *});
- */
 
 module.exports = data;

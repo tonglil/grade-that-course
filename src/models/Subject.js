@@ -17,7 +17,11 @@ module.exports = function(DB, Type) {
         }
     }, {
         associate: function(models) {
-            Subject.hasMany(models.Course, { as: 'Courses' });
+            Subject.hasMany(models.Course, {
+                as: 'Courses',
+                //foreignKeyConstraint: true,
+                //foreignKey: 'SubjectId'
+            });
             Subject.belongsTo(models.Faculty, { as: 'Faculty' });
         },
         classMethods: {

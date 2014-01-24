@@ -2,12 +2,9 @@
  * Routing index
  */
 
-var log     = require('../controllers/logging').log;
-
 module.exports = function(app) {
     app.get('/', function(req, res) {
         res.render('index', {
-            //title: '(don\'t) take that course',
             title: 'grade that course',
             subtitle: 'transparent course reviews - ubc edition',
             faculties: [
@@ -29,24 +26,24 @@ module.exports = function(app) {
                 'useful or interesting',
                 'poor Profs',
                 'poor TAs'
+            ],
+            menu: [
+                'scrape',
+                'scrape/list',
+                'scrape/subjects',
+                'scrape/subject/EECE',
+                'scrape/courses',
+                'scrape/course/EECE/320',
+                'list/all',
+                'list/subject/EECE',
+                'list/course/EECE/320'
             ]
-            //menu: [
-                //'scrape',
-                //'scrape/list',
-                //'scrape/subjects',
-                //'scrape/subject/EECE',
-                //'scrape/courses',
-                //'scrape/course/EECE/320',
-                //'list/all',
-                //'list/subject/EECE',
-                //'list/course/EECE/320'
-            //]
         });
     });
 
     require('./scrape')(app);
-    require('./list')(app);
-    require('./voting')(app);
+    //require('./list')(app);
+    //require('./voting')(app);
 
     app.get('/test', function(req, res) {
         var async = require('async');

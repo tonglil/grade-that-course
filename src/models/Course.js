@@ -7,6 +7,7 @@ module.exports = function(DB, Type) {
     var Course = DB.define("Course", {
         number: {
             //can include characters
+            primaryKey: true,
             type: Type.STRING
         },
         name: {
@@ -21,6 +22,7 @@ module.exports = function(DB, Type) {
         },
         SubjectId: {
             type: Type.STRING,
+            primaryKey: true,
             references: 'Subject',
             referencesKey: 'code'
         },
@@ -32,9 +34,9 @@ module.exports = function(DB, Type) {
     }, {
         associate: function(models) {
             Course.belongsTo(models.Subject, {
-                as: 'Subject'
-                //foreignKeyConstraint: true,
-                //foreignKey: 'code'
+                as: 'Subject',
+                foreignKeyConstraint: true,
+                foreignKey: 'SubjectId'
             });
             Course.belongsTo(models.Faculty, {
                 as: 'Faculty'
