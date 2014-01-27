@@ -149,29 +149,21 @@ module.exports = function(app) {
 
         var async = require('async');
         var Course = require('../models').Course;
+        var Subject = require('../models').Subject;
 
         console.log(subject, number);
         if (subject === '' && number === '') return;
 
-        Course.findCourses(subject, number, function(err, dbCourses) {
-            if (err) return res.redirect('500');
+        Course.findCourses(Subject, subject, number, function(err, courses) {
+          if (err) {
+            console.log(err);
+            return res.redirect('500');
+          }
 
-            var courses = [];
-            async.forEach(dbCourses, function(dbCourse, callback){
-                dbCourse.getSubject().success(function(subject) {
-                    var course = dbCourse.clean();
-                    course.subject = subject.clean();
-                    courses.push(course);
-                    //have a job that just aggregates scores for each course?
-                    //also get the aggregate scores and THEN callback.
-                    callback();
-                });
-            }, function(err) {
-                //console.log(courses);
-                return res.render('search-response', {
-                    courses: courses
-                });
-            });
+          //TODO: return json data and have client render template?
+          return res.render('search-response', {
+              courses: courses
+          });
         });
     });
 

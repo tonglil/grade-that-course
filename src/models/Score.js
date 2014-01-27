@@ -38,6 +38,16 @@ module.exports = function(DB, Type) {
             type: Type.INTEGER,
             defaultValue: 0
         }
+    }, {
+      associate: function(models) {
+        Score.belongsTo(models.Course, {
+          as: 'Course'
+        });
+        Score.hasMany(models.User, {
+          as: 'Users',
+          through: models.UserScores
+        });
+      }
     });
 
     return Score;

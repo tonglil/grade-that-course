@@ -11,15 +11,22 @@ module.exports = {
       //host: localhost,
       //port: 3306,
       //protocol: 'tcp',
-      //logging: console.log,
+      logging: console.log,
       maxConcurrentQueries: 100,
       //storage: ':memory:',
       //omitNull: false,
       //native: false,
-      //sync: { force: false },
       //syncOnAssociation: true,
       define: {
-        freezeTableName: true,
+        //freezeTableName: true,
+        instanceMethods: {
+          clean: function() {
+            var object = this.values;
+            delete object.createdAt;
+            delete object.updatedAt;
+            return object;
+          }
+        }
       },
       pool: {
         maxConnections: 5,

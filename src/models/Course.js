@@ -4,102 +4,70 @@
  */
 
 module.exports = function(DB, Type) {
-    var Course = DB.define("Course", {
-        number: {
-            //can include characters
-            primaryKey: true,
-            type: Type.STRING
-        },
-        name: {
-            //canonical name
-            type: Type.STRING
-        },
-        description: {
-            type: Type.TEXT
-        },
-        credits: {
-            type: Type.INTEGER
-        },
-        SubjectId: {
-            type: Type.STRING,
-            primaryKey: true,
-            references: 'Subject',
-            referencesKey: 'code'
-        },
-        //FacultyId: {
-            //type: Type.STRING,
-            //references: 'Faculty',
-            //referencesKey: 'shortName'
-        //}
-    }, {
-        associate: function(models) {
-            Course.belongsTo(models.Subject, {
-                as: 'Subject',
-                foreignKeyConstraint: true,
-                foreignKey: 'SubjectId'
-            });
-            Course.belongsTo(models.Faculty, {
-                as: 'Faculty'
-            });
-        },
-        classMethods: {
-            getCourse: function(subject, number, callback) {
-                var search = {};
-                if (subject) search.SubjectId = subject;
-                if (number) search.number = number;
-
-                this.find({
-                    where: search
-                }).success(function(course) {
-                    if (course) return callback(null, course);
-                    return callback('no course found');
-                }).error(function(err) {
-                    return callback(err);
-                });
-            },
-            getCourses: function(subject, number, callback) {
-                var search = {};
-                if (subject) search.SubjectId = subject;
-                if (number) search.number = number;
-
-                this.findAll({
-                    where: search
-                }).success(function(courses) {
-                    return callback(null, courses);
-                }).error(function(err) {
-                    return callback(err);
-                });
-            },
-            findCourses: function(subject, number, callback) {
-                this.findAll({
-                    where: ['number LIKE \'' + number + '%\' and SubjectId LIKE \'%' + subject + '%\''],
-                    limit: 10,
-                    order: 'SubjectId ASC, number ASC'
-                }).success(function(courses) {
-                    return callback(null, courses);
-                }).error(function(err) {
-                    return callback(err);
-                });
+  var Course = DB.define("Course", {
+    number: {
+      type: Type.STRING,
+      primaryKey: true
+    },
+    name: {
+      type: Type.STRING
+    },
+    description: {
+      type: Type.TEXT
+    },
+    credits: {
+      type: Type.INTEGER
+    },
+    SubjectId: {
+        type: Type.STRING,
+        primaryKey: true,
+        references: 'Subjects',
+        referencesKey: 'code'
+    },
+  }, {
+    associate: function(models) {
+      Course.belongsTo(models.Subject, {
+        as: 'Subject'
+      });
+      Course.belongsTo(models.Faculty, {
+        as: 'Faculty'
+      });
+      Course.hasOne(models.Score, {
+        as: 'Score'
+      });
+    },
+    classMethods: {
+      findCourses: function(Subject, subject, number, callback) {
+        this.findAll({
+          where: {
+            number: {
+              like: number + '%'
             }
-        },
-        instanceMethods: {
-            getCourseCode: function() {
-                return [this.SubjectId, this.number].join(' ');
+          },
+          order: 'number ASC',
+          include: [{
+            model: Subject,
+            where: {
+              code: {
+                like: '%' + subject + '%'
+              }
             },
-            clean: function() {
-                var course = this.values;
-                delete course.createdAt;
-                delete course.updatedAt;
-                return course;
-            }
-            //getSubjectName: function(callback) {
-                //this.getSubject().success(function(subject) {
-                    //return callback(subject.name);
-                //});
-            //},
-        }
+            order: 'code ASC'
+          }],
+          limit: 10,
+        }).success(function(courses) {
+          return callback(null, courses);
+        }).error(function(err) {
+          return callback(err);
+        });
+      }
+    },
+    instanceMethods: {
+      getCourseCode: function() {
+        return [this.SubjectId, this.number].join(' ');
+      }
+    }
+  });
 
-    });
-
-    return Course;
+  return Course;
 };

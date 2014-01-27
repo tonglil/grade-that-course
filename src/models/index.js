@@ -14,7 +14,8 @@ var models = [
     'Subject',
     'Course',
     'Score',
-    'User'
+    'User',
+    'UserScores'
 ];
 
 models.forEach(function(model) {
