@@ -1,11 +1,10 @@
 /*
- *Defines the model for a single course's scores and ratings
+ *Defines the model for a single course's counter to track rating scores
  *ex: 210
  */
 
 module.exports = function(DB, Type) {
     var Score = DB.define("Score", {
-        //counters to track votes
         take: {
             type: Type.INTEGER,
             defaultValue: 0

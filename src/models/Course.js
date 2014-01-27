@@ -7,7 +7,6 @@ module.exports = function(DB, Type) {
   var Course = DB.define("Course", {
     number: {
       type: Type.STRING,
-      primaryKey: true
     },
     name: {
       type: Type.STRING
@@ -20,7 +19,6 @@ module.exports = function(DB, Type) {
     },
     SubjectId: {
         type: Type.STRING,
-        primaryKey: true,
         references: 'Subjects',
         referencesKey: 'code'
     },
@@ -37,30 +35,6 @@ module.exports = function(DB, Type) {
       });
     },
     classMethods: {
-      findCourses: function(Subject, subject, number, callback) {
-        this.findAll({
-          where: {
-            number: {
-              like: number + '%'
-            }
-          },
-          order: 'number ASC',
-          include: [{
-            model: Subject,
-            where: {
-              code: {
-                like: '%' + subject + '%'
-              }
-            },
-            order: 'code ASC'
-          }],
-          limit: 10,
-        }).success(function(courses) {
-          return callback(null, courses);
-        }).error(function(err) {
-          return callback(err);
-        });
-      }
     },
     instanceMethods: {
       getCourseCode: function() {

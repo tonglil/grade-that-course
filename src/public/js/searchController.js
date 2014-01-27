@@ -1,12 +1,14 @@
 $(document).ready(function() {
+  //TODO: should filter a pre-existing list to reduce being hammered on by users?
   var prevQuery = null;
   var results = null;
-  //should filter a pre-existing list to reduce being hammered on by users?
+
   $('#index-search').keypress(function(e) {
     if (e.which == 13) {
       return false;
     }
   });
+
   $('#index-search').keyup(function(e) {
     //TODO:
     //sanitize input
@@ -46,7 +48,6 @@ $(document).ready(function() {
   });
 
   function hideMenu() {
-    //$('.content.menu').hide();
     $('.content.menu').animate({
       opacity: 'hide'
     }, {
@@ -55,7 +56,6 @@ $(document).ready(function() {
   }
 
   function showMenu() {
-    //$('.content.menu').hide();
     $('.content.menu').animate({
       opacity: 'show'
     }, {

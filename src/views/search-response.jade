@@ -2,30 +2,33 @@
     div.course
         ul.main-info
             li.course-code
-                a(href='ubc/course/' + course.subject.code + '/' + course.number)= course.subject.code + course.number
+                a(href='course/' + course.subject.code + '/' + course.number)= course.subject.code + course.number
             li.course-name
-                a(href='ubc/course/' + course.subject.code + '/' + course.number)= course.name
+                a(href='course/' + course.subject.code + '/' + course.number)= course.name
         p.course-description= course.description
         ul.meta
-            a(href='ubc/subject/' + course.subject.code)
-                li(class='course-subject button bg-dark-blue')= 'Subject: '.toUpperCase() + course.subject.name + ' (' + course.subject.code + ')'
-            a(href='ubc/credits/' + course.credits)
-                li(class='course-credits button bg-dark-blue')= 'Credits: '.toUpperCase() + course.credits
+            a(href='subject/' + course.subject.code.toLowerCase())
+                li(class='course-subject button bg-dark-blue')= 'subject: '.toUpperCase() + course.subject.name + ' (' + course.subject.code + ')'
+            a(href='credits/' + course.credits)
+                if (!credits)
+                    li(class='course-credits button bg-dark-blue')= 'credits: '.toUpperCase() + 'n/a'
+                else
+                    li(class='course-credits button bg-dark-blue')= 'credits: '.toUpperCase() + course.credits
         ul(class='score', course=course.code)
             li(type='take', class='vote button bg-green')= 'take: '.toUpperCase()
-                span(class='counter')= course.take
+                span(class='counter')= course.score.take
             li(type='pass', class='vote button bg-green')= 'pass: '.toUpperCase()
-                span(class='counter')= course.pass
+                span(class='counter')= course.score.pass
             li(type='easy', class='vote button bg-green')= 'easy: '.toUpperCase()
-                span(class='counter')= course.easy
+                span(class='counter')= course.score.easy
             li(type='hard', class='vote button bg-green')= 'hard: '.toUpperCase()
-                span(class='counter')= course.hard
+                span(class='counter')= course.score.hard
             li(type='fun', class='vote button bg-green')= 'fun: '.toUpperCase()
-                span(class='counter')= course.fun
+                span(class='counter')= course.score.fun
             li(type='useful', class='vote button bg-green')= 'useful / interesting: '.toUpperCase()
-                span(class='counter')= course.useful
-            li(type='prof', class='vote button bg-green')= 'poor profs: '.toUpperCase()
-                span(class='counter')= course.prof
-            li(type='ta', class='vote button bg-green')= 'poor TAs: '.toUpperCase()
-                span(class='counter')= course.ta
+                span(class='counter')= course.score.useful
+            li(type='prof', class='vote button bg-green')= 'good profs: '.toUpperCase()
+                span(class='counter')= course.score.prof
+            li(type='ta', class='vote button bg-green')= 'good TAs: '.toUpperCase()
+                span(class='counter')= course.score.ta
 - })

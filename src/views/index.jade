@@ -12,16 +12,17 @@ block content
       div#search-results.content
   div.container
       div.content.menu.text-center
-        p.menu ...or pick from one of these faculties
+        p.menu.faculties ...or pick from one of these faculties
         ul.faculties
           - faculties.forEach(function(faculty) {
-              li(id=faculty, class='button bg-' + faculty.slice(0,3))= faculty.toUpperCase()
+              a(href='faculty/' + faculty id=faculty class='faculty button bg-' + faculty.slice(0,3))
+                li= faculty.toUpperCase()
           - })
-        p.menu ...or from one of these categories
+        p.menu.scores ...or from one of these categories
         ul.scores
-          - scoring.forEach(function(category) {
-              li(id=category, class='button bg-orange')= category.toUpperCase()
-                  //a(href='#' + category)= category
+          - categories.forEach(function(category, i) {
+              a(href='category/' + categoriesSlug[i] id=category class='button bg-orange')
+                li= category.toUpperCase()
           - })
 
 block script

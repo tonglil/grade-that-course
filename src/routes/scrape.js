@@ -10,6 +10,7 @@ var models  = require('../models');
 var Course  = models.Course;
 var Subject = models.Subject;
 var Faculty = models.Faculty;
+var Score = models.Score;
 
 module.exports = function(app) {
   app.get('/scrape/list', function(req, res) {
@@ -51,7 +52,22 @@ module.exports = function(app) {
       console.log(err);
       return res.redirect('500');
     });
+  });
 
+  app.get('/populate', function(req, res) {
+    Course.findAll().success(function(courses) {
+      courses.forEach(function(course) {
+        Score.create().success(function(score) {
+          score.setCourse(course);
+        }).error(function(err) {
+          console.log('score not set:', err);
+        });
+      }).error(function(err) {
+        console.log('score not created:', err);
+      });
+
+      return res.json('populating all courses');
+    });
   });
 
   //app.get('/scrape/subject/:subject', scrapeSubject);
@@ -167,7 +183,17 @@ $courseTable.each(function(i, item) {
 
 if (courses.length === 0) {
   err = 'Subject ' + code + ' has no courses/was not found';
-  if (callbackOn) return callback(err, result);
+
+  Subject.find({
+    where: {
+      code: code
+    }
+  }).success(function(subject) {
+    subject.destroy().success(function() {
+      console.log('Subject ' + code + ' removed from db');
+      if (callbackOn) return callback(err, result);
+    });
+  });
 }
 
 Subject.find({
