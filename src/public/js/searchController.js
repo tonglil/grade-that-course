@@ -1,66 +1,58 @@
 $(document).ready(function() {
-  //TODO: should filter a pre-existing list to reduce being hammered on by users?
   var prevQuery = null;
   var results = null;
+  var cache = {};
+  var menu = $('.content.menu');
 
   $('#index-search').keypress(function(e) {
-    if (e.which == 13) {
-      return false;
-    }
+    if (e.which == 13) return false;
   });
 
   $('#index-search').keyup(function(e) {
     //TODO:
-    //sanitize input
+    //sanitize input on server side..
     //clean this code up
     var query = $(this).val().trim();
     var length = query.length;
+
     if (length > 2 && length < 10) {
-      if (prevQuery === query) {
+      if (query == prevQuery) {
         if (results !== null) {
-          hideMenu();
+          menu.slideUp();
           $('#search-results').html(results);
-        } else {
-          showMenu();
         }
+
         return false;
+      }
+
+      prevQuery = query;
+
+      if (cache[query] && typeof cache[query] !== 'undefined') {
+        menu.slideUp();
+        $('#search-results').html(cache[query]);
       } else {
-        prevQuery = query;
         $.ajax({
           type: 'POST',
           url: '/index-search',
-          data: { course: query }
+          data: {
+            course: query
+          }
         }).done(function(newResults) {
-          if (newResults.length === 0) {
+          if (!newResults || newResults.length === 0) {
             results = null;
-            showMenu();
+            menu.slideDown();
           } else {
             results = newResults;
-            hideMenu();
+            menu.slideUp();
           }
+
           $('#search-results').html(results);
+          cache[query] = results;
         });
       }
     } else {
-      showMenu();
+      menu.slideDown();
       $('#search-results').html(null);
     }
   });
-
-  function hideMenu() {
-    $('.content.menu').animate({
-      opacity: 'hide'
-    }, {
-      duration: 'slow'
-    });
-  }
-
-  function showMenu() {
-    $('.content.menu').animate({
-      opacity: 'show'
-    }, {
-      duration: 'slow'
-    });
-  }
 });
-

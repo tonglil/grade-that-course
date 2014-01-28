@@ -11,7 +11,6 @@ module.exports = function(DB, Type) {
     },
     shortName: {
       type: Type.STRING,
-      unique: true
     }
   }, {
     associate: function(models) {

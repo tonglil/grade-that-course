@@ -31,6 +31,10 @@ function all(app) {
   app.use(app.router);
   app.set('view engine', 'jade');
   app.set('views', path.join(__dirname, '../views'));
+
+  String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  };
 }
 
 //Development specific config

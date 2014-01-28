@@ -5,8 +5,7 @@
 module.exports = function(app) {
   app.get('/', function(req, res) {
     res.render('index', {
-      title: 'grade that course',
-      subtitle: 'transparent course reviews - ubc edition',
+      title: null,
       faculties: [
         'arts',
         'engineering',
@@ -58,30 +57,36 @@ module.exports = function(app) {
   //require('./list')(app);
   //require('./voting')(app);
 
-  app.get('/faculty/:faculty', function(req, res) {
+  app.post('/faculty', function(req, res) {
     var async = require('async');
     var Faculty = require('../models').Faculty;
-    var shortName = req.params.faculty;
-    if (shortName == 'other') shortName = null;
+    var Subject = require('../models').Subject;
+    var Score = require('../models').Score;
+    var shortName = req.body.faculty.toLowerCase();
 
     Faculty.findAll({
       where: {
         shortName: shortName
       }
     }).success(function(faculties) {
-      var result = [];
+      var results = [];
 
       async.each(faculties, function(faculty, callback) {
-        faculty.getCourses().success(function(courses) {
-          result.push(courses);
+        faculty.getSubjects({
+        }).success(function(subjects) {
+          results.push(subjects);
           callback();
         }).error(function(err) {
           callback(err);
         });
       }, function(err) {
         if (err) console.log(err);
-        console.log(result.length);
-        return res.json(result);
+        console.log(JSON.stringify(results));
+        return res.render('faculty', {
+          title: shortName.capitalize(),
+          faculty: shortName,
+          results: results
+        });
       });
     });
   });

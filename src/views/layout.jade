@@ -1,9 +1,16 @@
 doctype 5
 html
   head
-    title= title
+    if title
+      title= title + ' - ' + 'Grade That Course'
+    else
+      title= 'Grade That Course'
     link(rel='stylesheet', href='/css/style.css')
   body
+    header
+      div.content
+        h1.title.text-center: a(href='/')= 'grade that course'
+        h2.subtitle.text-center: a(href='/')= 'transparent course reviews - ubc edition'
     block content
-  footer
-    include includes/foot
+    footer
+      include includes/foot

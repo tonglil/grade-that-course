@@ -6,4 +6,4 @@ UPDATE Faculties SET shortName = 'lfs' WHERE name = 'Faculty of Land and Food Sy
 UPDATE Faculties SET shortName = 'sauder' WHERE name = 'Faculty of Comm and Bus Admin';
 UPDATE Faculties SET shortName = 'science' WHERE name = 'Faculty of Science';
 
--- UPDATE Faculties SET shortName = 'other' WHERE shortName IS NULL;
+UPDATE Faculties SET shortName = 'other' WHERE shortName IS NULL;

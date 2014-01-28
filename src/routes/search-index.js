@@ -14,8 +14,8 @@ module.exports = function(app) {
     var subject = (resultSub) ? resultSub[0] : '';
     var number = (resultNum) ? resultNum[0] : '';
 
-    console.log(subject, number);
-    if (subject === '' && number === '') return;
+    //console.log(subject, number);
+    if (subject === '' && number === '') return res.json(200, []);
 
     Course.findAll({
       where: {
@@ -43,7 +43,7 @@ module.exports = function(app) {
       });
     }).error(function(err) {
       console.log(err);
-      return res.json(500);
+      return res.json(500, []);
     });
   });
 };
