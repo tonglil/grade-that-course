@@ -17,5 +17,3 @@ node_modules/
 
 src/public/css/*.css
 !src/public/css/style.css
-
-baksrc/

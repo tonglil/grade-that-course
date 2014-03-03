@@ -51,6 +51,7 @@ $(document).ready(function() {
         });
       }
     } else {
+      $('#subject-results').slideUp();
       menu.slideDown();
       $('#search-results').html(null);
     }

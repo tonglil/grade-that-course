@@ -70,7 +70,6 @@ module.exports = function(app) {
       }
     }).success(function(faculties) {
       var results = [];
-
       async.each(faculties, function(faculty, callback) {
         faculty.getSubjects({
         }).success(function(subjects) {
@@ -81,7 +80,6 @@ module.exports = function(app) {
         });
       }, function(err) {
         if (err) console.log(err);
-        console.log(JSON.stringify(results));
         return res.render('faculty', {
           title: shortName.capitalize(),
           faculty: shortName,
@@ -91,15 +89,52 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/ubc/course/:subject/:number', function(req, res) {
+  app.get('/course/:subject/:number', function(req, res) {
     var Course = require('../models').Course;
-    var Subject = require('../models').Subject;
     var subject = req.params.subject;
     var number = req.params.number;
 
-    Course.getCourse(subject, number, function(err, course) {
-      if (err) return res.redirect('*');
-      return res.json(200, course.clean());
+    Course.find({
+      where: {
+        SubjectId: subject,
+        number: number
+      }
+    }).success(function(course) {
+      if (!course) return res.redirect('/none');
+      return res.json(200, course);
+    }).error(function(err) {
+      return res.redirect('/err');
+    });
+  });
+
+  //TODO: paginate results..
+  app.post('/subject/:subject', function(req, res) {
+    var Course = require('../models').Course;
+    var Score = require('../models').Score;
+    var Subject = require('../models').Subject;
+    var subject = req.params.subject;
+
+    Course.findAll({
+      order: 'number ASC',
+      include: [{
+        model: Subject,
+        where: {
+          code: {
+            like: '%' + subject + '%'
+          }
+        },
+        order: 'code ASC'
+      }, {
+        model: Score,
+      }],
+      //limit: 10,
+    }).success(function(courses) {
+      //TODO: return json data and have client render template?
+      return res.render('search-response', {
+        courses: courses
+      });
+    }).error(function(err) {
+      return res.json(500, []);
     });
   });
 
