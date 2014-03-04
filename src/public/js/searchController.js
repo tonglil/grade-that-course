@@ -2,7 +2,7 @@ $(document).ready(function() {
   var prevQuery = null;
   var results = null;
   var cache = {};
-  var menu = $('.content.menu');
+  var menu = $('.menu');
 
   $('#index-search').keypress(function(e) {
     if (e.which == 13) return false;

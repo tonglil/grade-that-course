@@ -1,7 +1,5 @@
-div#faculty-results-container.text-center
-  - results.forEach(function(subjects) {
-    - subjects.forEach(function(subject, i) {
-        a(href='/subject/' + subject.code.toLowerCase() class='subject button bg-' + faculty.slice(0,3).toLowerCase())= subject.name + ' (' + subject.code + ')'
-    - })
+- results.forEach(function(subjects) {
+  - subjects.forEach(function(subject, i) {
+      a(href='/subject/' + subject.code.toLowerCase() class='subject button bg-' + faculty.slice(0,3).toLowerCase())= subject.name + ' (' + subject.code + ')'
   - })
-div#subject-results
+- })

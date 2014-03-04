@@ -57,12 +57,12 @@ module.exports = function(app) {
   //require('./list')(app);
   //require('./voting')(app);
 
-  app.post('/faculty', function(req, res) {
+  app.post('/faculty/:faculty', function(req, res) {
     var async = require('async');
     var Faculty = require('../models').Faculty;
     var Subject = require('../models').Subject;
     var Score = require('../models').Score;
-    var shortName = req.body.faculty.toLowerCase();
+    var shortName = req.params.faculty;
 
     Faculty.findAll({
       where: {
@@ -86,24 +86,6 @@ module.exports = function(app) {
           results: results
         });
       });
-    });
-  });
-
-  app.get('/course/:subject/:number', function(req, res) {
-    var Course = require('../models').Course;
-    var subject = req.params.subject;
-    var number = req.params.number;
-
-    Course.find({
-      where: {
-        SubjectId: subject,
-        number: number
-      }
-    }).success(function(course) {
-      if (!course) return res.redirect('/none');
-      return res.json(200, course);
-    }).error(function(err) {
-      return res.redirect('/err');
     });
   });
 
@@ -135,6 +117,45 @@ module.exports = function(app) {
       });
     }).error(function(err) {
       return res.json(500, []);
+    });
+  });
+
+  app.post('/vote/:subject/:number/:category', function(req, res) {
+    var Course = require('../models').Course;
+    var subject = req.params.subject;
+    var number = req.params.number;
+    var category = req.params.category;
+
+    console.log(subject, number, category);
+
+    Course.find({
+      where: {
+        SubjectId: subject,
+        number: number
+      }
+    }).success(function(course) {
+      if (!course) return res.redirect('/none');
+      return res.json(200, course);
+    }).error(function(err) {
+      return res.redirect('/err');
+    });
+  });
+
+  app.get('/course/:subject/:number', function(req, res) {
+    var Course = require('../models').Course;
+    var subject = req.params.subject;
+    var number = req.params.number;
+
+    Course.find({
+      where: {
+        SubjectId: subject,
+        number: number
+      }
+    }).success(function(course) {
+      if (!course) return res.redirect('/none');
+      return res.json(200, course);
+    }).error(function(err) {
+      return res.redirect('/err');
     });
   });
 

@@ -1,17 +1,15 @@
 extends layout
 
 block content
-  div.container
-    div.content.menu
-      div.faculties.text-center
-        - faculties.forEach(function(faculty) {
-            a(href='faculty/' + faculty id=faculty class='faculty button bg-' + faculty.slice(0,3))= faculty.toUpperCase()
-        - })
-      div#faculty-results
-      div.scores.text-center
-        - categories.forEach(function(category, i) {
-            a(href='category/' + categoriesSlug[i] id=category class='button bg-orange')= category.toUpperCase()
-        - })
+  div.faculties.menu.text-center.content
+    - faculties.forEach(function(faculty) {
+        a(href='faculty/' + faculty id=faculty class='faculty button bg-' + faculty.slice(0,3))= faculty.toUpperCase()
+    - })
+    div#faculty-results.text-center.content
+  div.scores.menu.text-center.content
+    - categories.forEach(function(category, i) {
+        a(href='category/' + categoriesSlug[i] id=category class='button bg-orange')= category.toUpperCase()
+    - })
   include includes/search
   div#search-results.content
 

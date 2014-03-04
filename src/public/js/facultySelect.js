@@ -4,14 +4,13 @@ $(document).ready(function() {
   var cache = {};
 
   $('.button.faculty').click(function() {
-    var query = $(this).attr('id');
+    var query = $(this).attr('href');
+    $('#search-results').slideUp();
 
     if (query == prevQuery) {
       $('#faculty-results').slideToggle();
-      $('#search-results').slideToggle();
       $('.scores').slideToggle();
       $('.search').slideToggle();
-      prevQuery = null;
       return false;
     }
 
@@ -26,19 +25,15 @@ $(document).ready(function() {
     } else {
       $.ajax({
         type: 'POST',
-        url: '/faculty',
-        data: {
-          faculty: query
-        }
+        url: query
       }).done(function(results) {
         if (results) {
-          $('#search-results').slideUp();
           $('#faculty-results').slideUp(null, function() {
             $('#faculty-results').html(results).slideDown();
             $('.scores').slideUp();
             $('.search').slideUp();
-            cache[query] = results;
           });
+          cache[query] = results;
         }
       });
     }
