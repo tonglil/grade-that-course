@@ -62,11 +62,12 @@ module.exports = function(app) {
         }).error(function(err) {
           console.log('score not set:', err);
         });
-      }).error(function(err) {
-        console.log('score not created:', err);
       });
 
       return res.json('populating all courses');
+    }).error(function(err) {
+      console.log('score not created:', err);
+      return res.redirect('/err');
     });
   });
 

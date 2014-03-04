@@ -13,7 +13,11 @@
     "memory-cache": "0.0.5",
     "pg": "~2.8.3",
     "sequelize": "~2.0.0-beta.1",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "passport": "^0.2.0",
+    "passport-local": "^0.1.6",
+    "mysql": "^2.1.0",
+    "node-uuid": "^1.4.1"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

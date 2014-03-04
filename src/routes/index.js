@@ -52,6 +52,7 @@ module.exports = function(app) {
     });
   });
 
+  require('./login')(app);
   require('./scrape')(app);
   require('./search-index')(app);
   //require('./list')(app);

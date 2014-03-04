@@ -4,6 +4,7 @@
 
 var express = require('express');
 var path = require('path');
+var passport = require('passport');
 
 module.exports = function(app) {
   all(app);
@@ -25,13 +26,17 @@ function all(app) {
   app.use(express.json());
   app.use(express.urlencoded());
   app.use(express.methodOverride());
-  app.use(express.urlencoded());
-  //app.use(express.bodyParser());
+  app.use(express.cookieParser());
+  app.use(express.bodyParser());
+  app.use(express.session({ secret: 'secrets are good' }));
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(express.static(path.join(__dirname, '../public')));
   app.use(app.router);
   app.set('view engine', 'jade');
   app.set('views', path.join(__dirname, '../views'));
 
+  //Custom type methods
   String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
   };
