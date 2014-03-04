@@ -15,10 +15,18 @@ $(document).ready(function() {
     var query = $(this).val().trim();
     var length = query.length;
 
+    if (length > 0) {
+      menu.slideUp();
+    }
+
+    if (length === 0) {
+      menu.slideDown();
+    }
+
+    //TODO: adjust this based on use
     if (length > 2 && length < 10) {
       if (query == prevQuery) {
         if (results !== null) {
-          menu.slideUp();
           $('#search-results').html(results);
         }
 
@@ -28,7 +36,6 @@ $(document).ready(function() {
       prevQuery = query;
 
       if (cache[query] && typeof cache[query] !== 'undefined') {
-        menu.slideUp();
         $('#search-results').html(cache[query]);
       } else {
         $.ajax({
@@ -40,19 +47,16 @@ $(document).ready(function() {
         }).done(function(newResults) {
           if (!newResults || newResults.length === 0) {
             results = null;
-            menu.slideDown();
           } else {
             results = newResults;
-            menu.slideUp();
           }
 
+          $('#search-results').slideDown();
           $('#search-results').html(results);
           cache[query] = results;
         });
       }
     } else {
-      $('#subject-results').slideUp();
-      menu.slideDown();
       $('#search-results').html(null);
     }
   });

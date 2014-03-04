@@ -7,7 +7,7 @@ $(document).ready(function() {
     var query = $(this).attr('href');
 
     if (query == prevQuery) {
-      $('#subject-results').slideToggle();
+      $('#search-results').slideToggle();
       prevQuery = null;
       return false;
     }
@@ -15,8 +15,8 @@ $(document).ready(function() {
     prevQuery = query;
 
     if (typeof cache[query] !== 'undefined') {
-      $('#subject-results').slideUp(null, function() {
-        $('#subject-results').html(cache[query]).slideDown();
+      $('#search-results').slideUp(null, function() {
+        $('#search-results').html(cache[query]).slideDown();
       });
     } else {
       $.ajax({
@@ -24,8 +24,10 @@ $(document).ready(function() {
         url: query,
       }).done(function(results) {
         if (results) {
-          $('#subject-results').html(results).slideDown();
-          cache[query] = results;
+          $('#search-results').slideUp(null, function() {
+            $('#search-results').html(results).slideDown();
+            cache[query] = results;
+          });
         }
       });
     }

@@ -1,20 +1,19 @@
 extends layout
 
 block content
-  include includes/search
   div.container
     div.content.menu
-      p.menu.faculties.text-center ...or pick from one of these faculties
       div.faculties.text-center
         - faculties.forEach(function(faculty) {
             a(href='faculty/' + faculty id=faculty class='faculty button bg-' + faculty.slice(0,3))= faculty.toUpperCase()
         - })
       div#faculty-results
-      p.menu.scores.text-center ...or from one of these categories
       div.scores.text-center
         - categories.forEach(function(category, i) {
             a(href='category/' + categoriesSlug[i] id=category class='button bg-orange')= category.toUpperCase()
         - })
+  include includes/search
+  div#search-results.content
 
 append script
   script(type='text/javascript', src='/js/searchController.js')
