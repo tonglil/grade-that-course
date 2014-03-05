@@ -8,9 +8,23 @@ html
     link(rel='stylesheet', href='/css/style.css')
   body
     header
-      div.content
-        h1.title.text-center: a(href='/')= 'grade that course'
-        h2.subtitle.text-center: a(href='/')= 'transparent course reviews - ubc edition'
-    block content
+      .table.content.overflow
+        .table-cell
+          a(href='/' class='home-title')= 'Grade That Course'
+        .text-right.table-cell
+          if user
+            p(class='user-greet')= 'Welcome, '
+              a(href='/user/' + user.UUID )= user.email
+              = '! '
+            a(href='/logout' class='user button')= 'Logout'
+          else
+            a(href='/login' class='user button')= 'Login'
+            a(href='/signup' class='user button')= 'Sign Up'
+    .masthead
+        .hero.content.text-center
+          h1.title= 'Choose better classes, together.'
+          h2.subtitle= 'bringing transparency to course reviews - ubc edition'
+    .container
+      block content
     footer
       include includes/foot
