@@ -49,9 +49,11 @@ module.exports = function(DB, Type) {
       });
     },
     classMethods: {
-      signup: function(email, password, done) {
+      register: function(email, password, done) {
         var hash = require('../controllers/hash');
         var User = this;
+
+        if (!password) return done('no password');
 
         hash(password, function(err, salt, hash) {
           if (err) return done(err);

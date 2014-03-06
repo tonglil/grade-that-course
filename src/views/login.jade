@@ -3,8 +3,7 @@ extends layout
 block content
   .content
     h1 Welcome Back!
-    .signup.text-center
-      // h1.flap-top Welcome Back!
+    .register.text-center
       form(action="/login" method="post")
         input(type="email" placeholder="Email" name="email" id="email")
         input(type="password" placeholder="Password" name="password" id="password")

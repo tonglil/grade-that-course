@@ -4,51 +4,49 @@
 
 module.exports = function(app) {
   var passport = require('passport');
-  var Auth = require('../controllers/middlewares').Auth;
 
-  app.get('/signup', function(req, res) {
-    if (req.user) {
-      console.log('signup page, logged in:', req.user.values);
-    }
-
-    res.render('signup');
+  app.get('/register', function(req, res) {
+    res.render('register');
   });
 
-  //POST:
-  //email
-  //password
-  app.post('/signup', Auth.userExist, function(req, res) {
+  /*
+   *@param email
+   *@param password
+   */
+  app.post('/register', function(req, res, next) {
     var models = require('../models');
     var User = models.User;
 
-    var email = req.body.email;
-    var password = req.body.password;
+    User.register(req.body.email, req.body.password, function(err, user) {
+      //TODO: return to register, display reason for deny (user already exists, no password)
+      if (err) return next(err);
 
-    User.signup(email, password, function(err, user) {
-      if (err) return res.redirect('*');
-      req.login(user, function(err) {
-        console.log('req.login error:', err);
-        if (err) return res.redirect('*');
-        //logged in
-        return res.redirect('/login');
-      });
+      passport.authenticate('local', function(err, user, info) {
+        if (err) return next(err);
+        if (!user) return res.redirect('/login');
+        req.logIn(user, function(err) {
+          if (err) return next(err);
+          return res.redirect('/');
+        });
+      })(req, res, next);
     });
   });
 
   app.get('/login', function(req, res) {
     if (req.user) {
-      console.log('login page, logged in:', req.user.values);
+      return res.redirect('/');
+    } else {
+      return res.render('login');
     }
-
-    res.render('login');
   });
 
-  //POST:
-  //email
-  //password
+  /*
+   *@param email
+   *@param password
+   */
   app.post('/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/signup'
+    failureRedirect: '/register'
   }));
 
   app.get('/logout', function(req, res){

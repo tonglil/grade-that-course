@@ -5,6 +5,7 @@
 var express = require('express');
 var path = require('path');
 var passport = require('passport');
+var middlewares = require('../controllers/middlewares');
 
 module.exports = function(app) {
   all(app);
@@ -20,6 +21,7 @@ module.exports = function(app) {
 
 function all(app) {
   app.set('port', process.env.PORT || 4000);
+  //TODO: setup proper logger
   app.use(express.logger('dev'));
   app.use(express.favicon());
   app.use(express.compress());
@@ -28,24 +30,19 @@ function all(app) {
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.bodyParser());
+  //TODO: use real secret
   app.use(express.session({ secret: 'secrets are good' }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(express.static(path.join(__dirname, '../public')));
-
-  app.use(function(req, res, next) {
-    res.locals.user = req.user;
-    next();
-  });
-
+  app.use(middlewares.Auth.user);
   app.use(app.router);
+  app.use(middlewares.Errors.log);
+  app.use(middlewares.Errors.clientHandler);
+  app.use(middlewares.Errors.errorHandler);
+  app.use(middlewares.Prototypes);
   app.set('view engine', 'jade');
   app.set('views', path.join(__dirname, '../views'));
-
-  //Custom type methods
-  String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-  };
 }
 
 //Development specific config

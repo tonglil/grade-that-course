@@ -1,6 +1,6 @@
 var middlewares = {};
 
-var Auth = {
+middlewares.Auth = {
   authenticate: function(req, res, next) {
     if (req.isAuthenticated()) {
       next();
@@ -8,6 +8,7 @@ var Auth = {
       res.redirect('/login');
     }
   },
+
   userExist: function(req, res, next) {
     var User = require('../models').User;
 
@@ -23,9 +24,42 @@ var Auth = {
         res.redirect("/login");
       }
     });
+  },
+
+  user: function(req, res, next) {
+    res.locals.user = req.user;
+    next();
   }
 };
 
-middlewares.Auth = Auth;
+middlewares.Prototypes = {
+  string: String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  }
+};
+
+middlewares.Errors = {
+  log: function(err, req, res, next) {
+    console.error(err);
+    //TODO: stack?
+    console.error(err.stack);
+    next(err);
+  },
+
+  clientHandler: function(err, req, res, next) {
+    if (req.xhr) {
+      res.send(500, {
+        error: 'Something went wrong'
+      });
+    } else {
+      next(err);
+    }
+  },
+
+  errorHandler: function(err, req, res, next) {
+    res.status(500);
+    res.json('error');
+  }
+};
 
 module.exports = middlewares;

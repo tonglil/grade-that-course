@@ -3,9 +3,8 @@ extends layout
 block content
   .content
     h1 Create a New Account
-    .signup.text-center
-      // h1.flap-top Create a New Account
-      form(action="/signup" method="post")
+    .register.text-center
+      form(action="/register" method="post")
         input(type="email" placeholder="Email (not shared)" name="email" id="email")
         input(type="password" placeholder="Password (secured)" name="password" id="password")
-        input(type="submit" name="signup" id="signup" value="Sign Up")
+        input(type="submit" name="register" id="register" value="Sign Up")
