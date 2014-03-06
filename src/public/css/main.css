@@ -25,7 +25,7 @@ body {
 
 header {
     width: 100%;
-    padding: 6px 0;
+    padding: 3px 0;
     position: fixed;
     background: #FFFFFF;
     box-shadow: 0 1px 6px #222222;
@@ -37,19 +37,9 @@ header {
     font-weight: 700;
 }
 
-.user-greet {
-    padding-right: 12px;
+header form {
     display: inline-block;
-}
-
-.user.button {
-    border: 1px solid #D5D5D5;
-    color: #333333;
-    font-weight: 700;
-}
-
-.user.button:hover {
-    background: #EEEEEE;
+    margin: 3px 0 3px 6px;
 }
 
 /*
@@ -129,6 +119,10 @@ input#index-search {
     border-style: solid;
     border-width: 2px 0 0 2px;
     border-radius: 6px;
+}
+
+#search-results {
+    margin: 32px auto;
 }
 
 .course {
@@ -212,14 +206,15 @@ p.menu {
  *User Actions
  */
 
+
+.user-action-wrapper {
+    padding: 32px 0;
+}
+
+
 .user-actions {
     margin: 32px auto;
     max-width: 500px;
-}
-
-.user-action {
-    font-family: Helvetica,Arial,sans-serif;
-    font-size: 20px;
 }
 
 .login {
@@ -246,4 +241,8 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+}
+
+.user-action form label {
+    display: none;
 }

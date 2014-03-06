@@ -5,7 +5,9 @@ html
       title= title + ' - ' + 'Grade That Course'
     else
       title= 'Grade That Course'
-    link(rel='stylesheet', href='/css/bootstrap.css')
+    link(rel='stylesheet', href='/css/bs-btn.css')
+    link(rel='stylesheet', href='/css/bs-form.css')
+    link(rel='stylesheet', href='/css/bs-modal.css')
     link(rel='stylesheet', href='/css/style.min.css')
   body
     header
@@ -19,8 +21,10 @@ html
               = '! '
             a(href='/logout' class='user button')= 'Logout'
           else
-            a(href='/login' class='user button')= 'Login'
-            a(href='/register' class='user button')= 'Register'
+            form(action='/login')
+              a(href='/login' data-toggle='modal' class='btn btn-default')= 'Login'
+            form(action='/register')
+              a(href='/register' data-toggle='modal' class='btn btn-default')= 'Register'
     .masthead
         .hero.content.text-center
           h1.title= 'Choose better classes, together.'
@@ -29,3 +33,7 @@ html
       block content
     footer
       include includes/footer
+
+append script
+  script(type='text/javascript' src='/js/userActions.js')
+  script(type='text/javascript' src='/js/bs-modal.js')
