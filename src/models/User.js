@@ -57,16 +57,21 @@ module.exports = function(DB, Type) {
 
         hash(password, function(err, salt, hash) {
           if (err) return done(err);
-          User.create({
-            UUID: guid.v4(),
-            email: email,
-            salt: salt,
-            hash: hash
+          User.find({
+            email: email
           }).success(function(user) {
-            if (!user) return done('no user');
-            return done(null, user);
-          }).error(function(err) {
-            return done(err);
+            if (user) return done('user exists');
+            User.create({
+              UUID: guid.v4(),
+              email: email,
+              salt: salt,
+              hash: hash
+            }).success(function(user) {
+              if (!user) return done('no user');
+              return done(null, user);
+            }).error(function(err) {
+              return done(err);
+            });
           });
         });
       }

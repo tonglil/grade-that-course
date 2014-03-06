@@ -1,9 +1,10 @@
 extends layout
 
 block content
-  .content
+  .content.text-center
     h1 Create a New Account
-    .register.text-center
+    .register
+      h3= info
       form(action="/register" method="post")
         input(type="email" placeholder="Email (not shared)" name="email" id="email")
         input(type="password" placeholder="Password (secured)" name="password" id="password")

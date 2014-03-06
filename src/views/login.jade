@@ -1,9 +1,10 @@
 extends layout
 
 block content
-  .content
-    h1 Welcome Back!
-    .register.text-center
+  .content.text-center
+    h1.user-action Sign In
+    .login
+      h3= info
       form(action="/login" method="post")
         input(type="email" placeholder="Email" name="email" id="email")
         input(type="password" placeholder="Password" name="password" id="password")

@@ -18,7 +18,16 @@ module.exports = function(app) {
     var User = models.User;
 
     User.register(req.body.email, req.body.password, function(err, user) {
-      //TODO: return to register, display reason for deny (user already exists, no password)
+      if (err === 'no password') {
+        return res.render('register', {
+          info: 'Enter a password'
+        });
+      }
+      if (err === 'user exists') {
+        return res.render('register', {
+          info: 'User already exists'
+        });
+      }
       if (err) return next(err);
 
       passport.authenticate('local', function(err, user, info) {
@@ -44,10 +53,20 @@ module.exports = function(app) {
    *@param email
    *@param password
    */
-  app.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/register'
-  }));
+  app.post('/login', function(req, res, next) {
+      passport.authenticate('local', function(err, user, info) {
+        if (!user || err === 'no password') {
+          return res.render('login', {
+            info: 'Email or password is incorrect'
+          });
+        }
+        if (err) return next(err);
+        req.logIn(user, function(err) {
+          if (err) return next(err);
+          return res.redirect('/');
+        });
+      })(req, res, next);
+  });
 
   app.get('/logout', function(req, res){
     req.logout();
