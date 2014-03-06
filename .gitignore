@@ -15,5 +15,4 @@ build
 node_modules/
 .nodemonignore
 
-src/public/css/*.css
-!src/public/css/style.css
+src/public/css/style.min.css

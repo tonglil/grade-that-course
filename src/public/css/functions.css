@@ -1,0 +1,157 @@
+/*
+ *Functions
+ */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+}
+
+p {
+    margin: 0 0 12px 0;
+}
+
+p:last-of-type {
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    /*margin: 0 0 20px 0;*/
+    /*font-size: 25px;*/
+    /*font-weight: 400;*/
+    /*letter-spacing: 0.5px;*/
+    /*color: #ffffff;*/
+}
+
+.left { float: left; }
+.right { float: right; }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+
+.table { display: table; }
+.table-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.overflow { overflow: hidden; }
+.hidden { display: none; }
+
+.no-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.button {
+    padding: 10px 10px 8px;
+    margin: 4px 12px 4px 0;
+    display: inline-block;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400px;
+    letter-spacing: 0.5px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.button:hover {
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.button:last-of-type {
+    margin-right: 0;
+}
+
+.border-dark-blue {
+    border: 1px solid #262937;
+    color: #262937;
+}
+
+/*
+ *Backgrounds
+ */
+
+.bg-green {
+    color: #ffffff;
+    background: #2E8B57;
+}
+
+.bg-red {
+    color: #ffffff;
+    background: #FF3A2D;
+    /*background: #E24C3E;*/
+}
+
+.bg-orange {
+    color: #ffffff;
+    background: #FF9900;
+}
+
+.bg-light-blue {
+    color: #ffffff;
+    background: #007AFF;
+}
+
+.bg-dark-blue {
+    color: #ffffff;
+    background: #262937;
+}
+
+/*
+ *Faculty Colors
+ */
+
+.bg-art {
+    color: #ffffff;
+    background: #532F91;
+}
+
+.bg-eng {
+    color: #ffffff;
+    background: #FF3A2D;
+}
+
+.bg-for {
+    color: #ffffff;
+    background: #24513D;
+}
+
+.bg-kin {
+    color: #ffffff;
+    background: #0F9D58;
+}
+
+.bg-lfs {
+    color: #ffffff;
+    background: #000000;
+}
+
+.bg-sau {
+    color: #ffffff;
+    background: #444444;
+}
+
+.bg-sci {
+    color: #ffffff;
+    background: #093B78;
+}
+
+.bg-oth {
+    color: #ffffff;
+    background: #888888;
+}

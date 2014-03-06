@@ -34,14 +34,16 @@ module.exports = function(grunt) {
     cssmin: {
       combine: {
         options: {
-          keepSpecialComments: '*'
+          //keepSpecialComments: '*'
         },
         files: {
-          'src/public/css/style.css': [
+          'src/public/css/style.min.css': [
             'src/public/css/reset.css',
-            'src/public/css/functions.css',
             'src/public/css/font.css',
-            'src/public/css/main.css'
+            'src/public/css/functions.css',
+            'src/public/css/main.css',
+            'src/public/css/opt-tablet.css',
+            'src/public/css/opt-mobile.css'
           ]
         }
       }

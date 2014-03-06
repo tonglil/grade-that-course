@@ -1,0 +1,30 @@
+/*
+ *Font-face
+ */
+
+@font-face {
+    font-family: 'Sovereign';
+    src: url('/fonts/sov.eot');
+    src: url('/fonts/sov.eot') format('embedded-opentype'),
+         url('/fonts/sov.woff') format('woff'),
+         url('/fonts/sov.ttf') format('truetype'),
+         url('/fonts/sov.svg#Sovereign') format('svg');
+}
+
+@font-face {
+    font-family: 'NexaLight';
+    src: url('/fonts/nexalight.eot');
+    src: url('/fonts/nexalight.eot') format('embedded-opentype'),
+         url('/fonts/nexalight.woff') format('woff'),
+         url('/fonts/nexalight.ttf') format('truetype'),
+         url('/fonts/nexalight.svg#NexaLight') format('svg');
+}
+
+@font-face {
+    font-family: 'NexaBold';
+    src: url('/fonts/nexabold.eot');
+    src: url('/fonts/nexabold.eot') format('embedded-opentype'),
+         url('/fonts/nexabold.woff') format('woff'),
+         url('/fonts/nexabold.ttf') format('truetype'),
+         url('/fonts/nexabold.svg#NexaBold') format('svg');
+}
