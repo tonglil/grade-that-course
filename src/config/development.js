@@ -4,7 +4,8 @@
 
 module.exports = {
   database: {
-    name: 'course_voter_dev',
+    //name: 'course_voter_dev',
+    name: 'course_voter',
     username: 'root',
     password: 'root',
     options: {

@@ -211,8 +211,12 @@ p.menu {
     margin: 32px auto;
     padding: 24px;
     background: none repeat scroll 0 0 #FFFFFF;
-    border-radius: 3px;
+    border-radius: 6px;
     border: 1px solid #CCCCCC;
+}
+
+.user-action-wrapper .label {
+    display: inline-block;
 }
 
 /*

@@ -42,7 +42,7 @@ middlewares.Errors = {
   log: function(err, req, res, next) {
     console.error(err);
     //TODO: stack?
-    console.error(err.stack);
+    console.error('stack', err.stack);
     next(err);
   },
 
@@ -58,7 +58,7 @@ middlewares.Errors = {
 
   errorHandler: function(err, req, res, next) {
     res.status(500);
-    res.json('error');
+    res.send(err.stack);
   }
 };
 

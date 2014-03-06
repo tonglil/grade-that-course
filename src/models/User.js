@@ -47,18 +47,21 @@ module.exports = function(DB, Type) {
         as: 'Scores',
         through: models.UserScores
       });
+      User.belongsTo(models.AuthFacebook, {
+        as: 'AuthFacebook'
+      });
     },
     classMethods: {
       register: function(email, password, done) {
         var hash = require('../controllers/hash');
         var User = this;
 
-        if (!password) return done('no password');
-
         hash(password, function(err, salt, hash) {
           if (err) return done(err);
           User.find({
-            email: email
+            where: {
+              email: email
+            }
           }).success(function(user) {
             if (user) return done('user exists');
             User.create({
@@ -84,7 +87,7 @@ module.exports = function(DB, Type) {
         hash(password, user.salt, function(err, hash) {
           if (err) return done(err);
           if (hash.toString('base64') == user.hash) return done(null, user);
-          return done('incorrect password', false);
+          return done('incorrect password', null);
         });
       }
     }

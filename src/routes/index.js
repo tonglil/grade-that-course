@@ -2,8 +2,18 @@
  * Routing index
  */
 
-module.exports = function(app) {
+module.exports = function(app, passport) {
   app.get('/', function(req, res) {
+    if (req.user) {
+      console.log(req.user.values);
+
+      req.user.getAuthFacebook().success(function(fb) {
+        console.log('good', fb);
+      }).error(function(err) {
+        console.log('bad', err);
+      });
+    }
+
     res.render('index', {
       title: null,
       faculties: [
@@ -52,11 +62,11 @@ module.exports = function(app) {
     });
   });
 
-  require('./login')(app);
-  require('./scrape')(app);
-  require('./search-index')(app);
   //require('./list')(app);
   //require('./voting')(app);
+  require('./scrape')(app);
+  require('./user-auth')(app, passport);
+  require('./search-index')(app);
 
   app.post('/faculty/:faculty', function(req, res) {
     var async = require('async');

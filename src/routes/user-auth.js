@@ -1,10 +1,8 @@
 /*
- *Login endpoints
+ *User authorization endpoints
  */
 
-module.exports = function(app) {
-  var passport = require('passport');
-
+module.exports = function(app, passport) {
   app.get('/register', function(req, res) {
     res.render('register');
   });
@@ -17,12 +15,13 @@ module.exports = function(app) {
     var models = require('../models');
     var User = models.User;
 
+    if (!req.body.password) {
+      return res.render('register', {
+        info: 'Enter a password'
+      });
+    }
+
     User.register(req.body.email, req.body.password, function(err, user) {
-      if (err === 'no password') {
-        return res.render('register', {
-          info: 'Enter a password'
-        });
-      }
       if (err === 'user exists') {
         return res.render('register', {
           info: 'User already exists'
@@ -54,19 +53,34 @@ module.exports = function(app) {
    *@param password
    */
   app.post('/login', function(req, res, next) {
-      passport.authenticate('local', function(err, user, info) {
-        if (!user || err === 'no password') {
-          return res.render('login', {
-            info: 'Email or password is incorrect'
-          });
-        }
-        if (err) return next(err);
-        req.logIn(user, function(err) {
-          if (err) return next(err);
-          return res.redirect('/');
+    passport.authenticate('local', function(err, user, info) {
+      if (err === 'no user') {
+        return res.render('login', {
+          info: 'User does not exist'
         });
-      })(req, res, next);
+      }
+      if (err === 'incorrect password') {
+        return res.render('login', {
+          info: 'Incorrect password'
+        });
+      }
+      if (err) return next(err);
+      req.logIn(user, function(err) {
+        if (err) return next(err);
+        return res.redirect('/');
+      });
+    })(req, res, next);
   });
+
+  app.get('/auth/facebook', passport.authenticate('facebook'));
+  //app.get('/auth/facebook', passport.authenticate('facebook', {
+  //scope: 'email'
+  //}))
+
+  app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  }));
 
   app.get('/logout', function(req, res){
     req.logout();

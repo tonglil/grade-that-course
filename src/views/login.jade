@@ -2,8 +2,15 @@ extends layout
 
 block content
   .user-action-wrapper.login.content.text-center
-    //-h1.form-group Log In
+    h1.form-group Use Social Media
+    .form-group
+      a(href='/auth/facebook' class='btn btn-primary')= 'Facebook'
+      a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
+      a(href='/auth/facebook' class='btn btn-danger')= 'Google'
+    h1.form-group Or Sign In
     form(action='/login' method='post')
+      if info
+        span.form-group.label.label-warning= info
       .form-group
         input(type='email' class='form-control' placeholder='Email' id='email' name='email' autofocus='autofocus')
       .form-group

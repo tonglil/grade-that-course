@@ -15,7 +15,8 @@ var models = [
     'Course',
     'Score',
     'User',
-    'UserScores'
+    'UserScores',
+    'AuthFacebook'
 ];
 
 models.forEach(function(model) {

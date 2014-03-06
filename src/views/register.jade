@@ -2,8 +2,15 @@ extends layout
 
 block content
   .user-action-wrapper.login.content.text-center
-    h1.form-group Create a New Account
+    h1.form-group Use Social Media
+    .form-group
+      a(href='/auth/facebook' class='btn btn-primary')= 'Facebook'
+      a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
+      a(href='/auth/facebook' class='btn btn-danger')= 'Google'
+    h1.form-group Or Create a New Account
     form(action="/register" method="post")
+      if info
+        span.form-group.label.label-warning= info
       .form-group
         input(type='email' class='form-control' placeholder='Email (not shared)' id='email' name='email' autofocus='autofocus')
       .form-group
