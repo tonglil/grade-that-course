@@ -7,15 +7,15 @@ $(document).ready(function () {
         },
         password: {
           required: true,
-          //minlength: 3
+          //minlength: 5
         }
       },
       errorPlacement: function(error, element) {
       },
-      highlight: function (element) {
+      highlight: function(element) {
         $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
       },
-      success: function (element) {
+      success: function(element) {
         $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
       }
     });

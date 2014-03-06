@@ -1,13 +1,15 @@
-.modal.hide.fade
-  .modal-dialog
-    .modal-content
-      .user-action-wrapper.login.content.text-center
-        h1.form-group Log In
-        form(action='/login' method='post')
-          .form-group
-            input(type='email' class='form-control' placeholder='Email' id='email' name='email')
-          .form-group
-            input(type='password' class='form-control' placeholder='Password' id='password' name='password')
-          button(type='submit' class='btn btn-default') Log In
-      script(type='text/javascript' src='http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js')
-      script(type='text/javascript' src='/js/userValidate.js')
+extends layout
+
+block content
+  .user-action-wrapper.login.content.text-center
+    //-h1.form-group Log In
+    form(action='/login' method='post')
+      .form-group
+        input(type='email' class='form-control' placeholder='Email' id='email' name='email' autofocus='autofocus')
+      .form-group
+        input(type='password' class='form-control' placeholder='Password' id='password' name='password')
+      button(type='submit' class='btn btn-default') Log In
+
+append script
+  script(type='text/javascript' src='//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js')
+  script(type='text/javascript' src='/js/validateLogin.js')
