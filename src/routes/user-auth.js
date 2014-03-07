@@ -10,6 +10,8 @@ module.exports = function(app, passport) {
   /*
    *@param email
    *@param password
+   *@param fname
+   *@param lname
    */
   app.post('/register', function(req, res, next) {
     var models = require('../models');
@@ -21,8 +23,8 @@ module.exports = function(app, passport) {
       });
     }
 
-    User.register(req.body.email, req.body.password, function(err, user) {
-      if (err === 'user exists') {
+    User.register(req.body.email, req.body.password, req.body.fname, req.body.lname, function(err, user) {
+      if (err === 'user already exists') {
         return res.render('register', {
           info: 'User already exists'
         });
@@ -72,10 +74,10 @@ module.exports = function(app, passport) {
     })(req, res, next);
   });
 
-  app.get('/auth/facebook', passport.authenticate('facebook'));
-  //app.get('/auth/facebook', passport.authenticate('facebook', {
-  //scope: 'email'
-  //}))
+  //app.get('/auth/facebook', passport.authenticate('facebook'));
+  app.get('/auth/facebook', passport.authenticate('facebook', {
+    scope: 'email'
+  }));
 
   app.get('/auth/facebook/callback', passport.authenticate('facebook', {
     successRedirect: '/',

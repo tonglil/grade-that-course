@@ -11,11 +11,14 @@ module.exports = function(DB, Type) {
       primaryKey: true,
       unique: true,
       allowNull: false,
+      validate: {
+        notEmpty: true
+      }
     },
     email: {
       type: Type.STRING,
       unique: true,
-      allowNull: false,
+      //allowNull: false,
       validate: {
         isEmail: true,
         notEmpty: true
@@ -23,13 +26,21 @@ module.exports = function(DB, Type) {
     },
     salt: {
       type: Type.STRING,
-      allowNull: false,
+      //allowNull: false,
       validate: {
         notEmpty: true
       }
     },
     hash: {
       type: Type.STRING,
+      //allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    setPassword: {
+      type: Type.BOOLEAN,
+      defaultValue: false,
       allowNull: false,
       validate: {
         notEmpty: true
@@ -52,7 +63,7 @@ module.exports = function(DB, Type) {
       });
     },
     classMethods: {
-      register: function(email, password, done) {
+      register: function(email, password, fname, lname, done) {
         var hash = require('../controllers/hash');
         var User = this;
 
@@ -63,19 +74,54 @@ module.exports = function(DB, Type) {
               email: email
             }
           }).success(function(user) {
-            if (user) return done('user exists');
+            if (user) return done('user already exists');
             User.create({
               UUID: guid.v4(),
               email: email,
               salt: salt,
-              hash: hash
+              hash: hash,
+              setPassword: true,
+              firstName: fname,
+              lastName: lname
             }).success(function(user) {
               if (!user) return done('no user');
               return done(null, user);
             }).error(function(err) {
               return done(err);
             });
+          }).error(function(err) {
+            return done(err);
           });
+        });
+      },
+      fill: function(email, fname, lname, done) {
+        var User = this;
+
+        User.find({
+          where: {
+            email: email
+          }
+        }).success(function(user) {
+          if (user) {
+            user.setAuthFacebook()
+            //TODO: connect users to existing
+            return done('user already exists');
+          } else {
+            User.create({
+              UUID: guid.v4(),
+              email: email,
+              setPassword: false,
+              firstName: fname,
+              lastName: lname
+            }).success(function(user) {
+              if (!user) return done('no user');
+              return done(null, user);
+            }).error(function(err) {
+              return done(err);
+            });
+          }
+        }).error(function(err) {
+          return done(err);
         });
       }
     },

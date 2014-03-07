@@ -44,7 +44,7 @@ module.exports = function(passport) {
     });
   }));
 
-  passport.use(new FacebookStrategy({
+  passport.use('facebook', new FacebookStrategy({
     clientID        : auth.facebookAuth.clientID,
     clientSecret    : auth.facebookAuth.clientSecret,
     callbackURL     : auth.facebookAuth.callbackURL
@@ -53,55 +53,54 @@ module.exports = function(passport) {
     console.log(refreshToken);
     console.log(profile);
 
+    var query = profile.id;
+
     AuthFacebook.find({
       where: {
-        id: profile.id
+        id: query
       }
     }).success(function(facebook) {
       if (!facebook) {
-        return done(null, false);
-        //TODO: create a fb-user?
-        //return done('no facebook user', false);
-      } else {
-        console.log(facebook.values);
-        facebook.getUser(function(user) {
-          if (!user) {
-            //TODO: create local-user!
-            console.log('we should create a user or link a user');
-            return done('no user', false);
-          } else {
-            return done(null, user);
-          }
+        AuthFacebook.create({
+          id: profile.id,
+          token: accessToken,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          email: profile.emails[0].value
+        }).success(function(facebook) {
+          doFacebook(facebook);
+        }).error(function(err) {
+          return done(err);
         });
+      } else {
+        doFacebook(facebook);
       }
     }).error(function(err) {
       done(err);
     });
 
+    function doFacebook(facebook) {
+      console.log('facebook object found');
+      console.log(facebook.values);
+
+      if (!facebook.UserId) {
+      //fill: function(email, fname, lname, done) {
+        User.fill(facebook.email, facebook.firstName, facebook.lastName, function(err, user) {
+
+        });
+
+        //TODO: create local-user!
+        console.log('no local user, allow user to create or link a user');
+        return done('no user', false);
+      } else {
+        facebook.getUser(function(user) {
+          return done(null, user);
+        });
+      }
+    }
 
 
 
-/*
- *    // find the user in the database based on their facebook id
- *    User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
- *      // if the user is found, then log them in
- *      // if there is no user found with that facebook id, create them
- *      var newUser            = new User();
- *
- *      // set all of the facebook information in our user model
- *      newUser.facebook.id    = profile.id; // set the users facebook id
- *      newUser.facebook.accessToken = accessToken; // we will save the accessToken that facebook provides to the user
- *      newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
- *      newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
- *
- *      // save our user to the database
- *      newUser.save(function(err) {
- *        if (err) throw err;
- *        // if successful, return the new user
- *        return done(null, newUser);
- *      });
- *    });
- */
   }));
 
 };

@@ -16,6 +16,7 @@ module.exports = function(DB, Type) {
     },
     email: {
       type: Type.STRING,
+      allowNull: true,
       validate: {
         isEmail: true
       }
