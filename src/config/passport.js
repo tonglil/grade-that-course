@@ -9,6 +9,7 @@ var AuthProvider = require('../models').AuthProvider;
 
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 module.exports = function(passport) {
   passport.serializeUser(function(user, done) {
@@ -77,16 +78,11 @@ module.exports = function(passport) {
     });
 
     function doFacebook(facebook) {
-      console.log('facebook object found');
-      console.log(facebook.values);
-
       if (!facebook.UserId) {
         User.fill(facebook, function(err, user) {
           if (err === 'user already exists') {
-            return done('user already exists');
-            /*
-             *  info: 'User already exists, please enter password to link accounts?'
-             */
+            //TODO: info: 'User already exists, please enter password to link accounts?'
+            return done(err);
           }
           if (err) return done(err);
 
@@ -96,6 +92,58 @@ module.exports = function(passport) {
         });
       } else {
         facebook.getUser().success(function(user) {
+          return done(null, user);
+        });
+      }
+    }
+  }));
+
+  passport.use('google', new GoogleStrategy({
+    clientID        : auth.googleAuth.clientID,
+    clientSecret    : auth.googleAuth.clientSecret,
+    callbackURL     : auth.googleAuth.callbackURL
+  }, function(accessToken, refreshToken, profile, done) {
+    AuthProvider.find({
+      where: {
+        provider: 'google',
+        id: profile.id
+      }
+    }).success(function(google) {
+      if (!google) {
+        AuthProvider.create({
+          provider: 'google',
+          id: profile.id,
+          token: accessToken,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          email: profile.emails[0].value
+        }).success(function(google) {
+          doGoogle(google);
+        }).error(function(err) {
+          return done(err);
+        });
+      } else {
+        doGoogle(google);
+      }
+    }).error(function(err) {
+      done(err);
+    });
+
+    function doGoogle(google) {
+      if (!google.UserId) {
+        User.fill(google, function(err, user) {
+          if (err === 'user already exists') {
+            //TODO: info: 'User already exists, please enter password to link accounts?'
+            return done('user already exists');
+          }
+          if (err) return done(err);
+
+          google.setUser(user).success(function() {
+            return done(null, user);
+          });
+        });
+      } else {
+        google.getUser().success(function(user) {
           return done(null, user);
         });
       }

@@ -6,8 +6,8 @@ block content
       .form-group
         a(href='/register' class='btn btn-default')= 'Email Sign Up'
         a(href='/auth/facebook' class='btn btn-primary')= 'Facebook'
-        a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
-        a(href='/auth/facebook' class='btn btn-danger')= 'Google'
+        //-a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
+        a(href='/auth/google' class='btn btn-danger')= 'Google'
       h1.form-group Or Log In
       form(id='login' action='/login' method='post')
         if info

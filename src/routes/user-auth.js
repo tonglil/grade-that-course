@@ -63,8 +63,6 @@ module.exports = function(app, passport) {
       }
       if (err === 'no password') {
         //TODO: tell them to set a password
-      }
-      if (err === 'user already exists') {
         return res.render('login', {
           info: 'Use social media with that email'
         });
@@ -82,15 +80,46 @@ module.exports = function(app, passport) {
     })(req, res, next);
   });
 
-  //app.get('/auth/facebook', passport.authenticate('facebook'));
   app.get('/auth/facebook', passport.authenticate('facebook', {
     scope: 'email'
   }));
 
-  app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-    successRedirect: '/',
-    failureRedirect: '/login'
+  app.get('/auth/facebook/callback', function(req, res, next) {
+    passport.authenticate('facebook', function(err, user, info) {
+      if (err === 'user already exists') {
+        return res.render('login', {
+          info: 'Use another social media with that email'
+        });
+      }
+      if (err) return next(err);
+      req.logIn(user, function(err) {
+        if (err) return next(err);
+        return res.redirect('/');
+      });
+    })(req, res, next);
+  });
+
+  app.get('/auth/google', passport.authenticate('google', {
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email'
+    ]
   }));
+
+  app.get('/auth/google/callback', function(req, res, next) {
+    passport.authenticate('google', function(err, user, info) {
+      if (err === 'user already exists') {
+        return res.render('login', {
+          info: 'Use another social media with that email'
+        });
+      }
+      if (err) return next(err);
+      req.logIn(user, function(err) {
+        if (err) return next(err);
+        return res.redirect('/');
+      });
+    })(req, res, next);
+  });
 
   app.get('/logout', function(req, res){
     req.logout();
