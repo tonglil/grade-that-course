@@ -10,13 +10,13 @@ var db = new Sequelize(config.name, config.username, config.password, config.opt
 var data = {};
 
 var models = [
+    'User',
     'Faculty',
     'Subject',
     'Course',
     'Score',
-    'User',
     'UserScores',
-    'AuthFacebook'
+    'AuthProvider',
 ];
 
 models.forEach(function(model) {

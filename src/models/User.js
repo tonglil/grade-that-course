@@ -6,44 +6,46 @@ var guid = require('node-uuid');
 
 module.exports = function(DB, Type) {
   var User = DB.define('User', {
-    UUID: {
+    uuid: {
       type: Type.STRING,
       primaryKey: true,
       unique: true,
       allowNull: false,
       validate: {
+        notNull: true,
         notEmpty: true
       }
     },
     email: {
       type: Type.STRING,
       unique: true,
-      //allowNull: false,
+      allowNull: false,
       validate: {
-        isEmail: true,
-        notEmpty: true
+        notNull: true,
+        notEmpty: true,
+        isEmail: true
       }
     },
     salt: {
       type: Type.STRING,
-      //allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true
       }
     },
     hash: {
       type: Type.STRING,
-      //allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true
       }
     },
-    setPassword: {
+    passwordSet: {
       type: Type.BOOLEAN,
       defaultValue: false,
-      allowNull: false,
+      //allowNull: false,
       validate: {
-        notEmpty: true
+        //notNull: true,
       }
     },
     firstName: {
@@ -58,8 +60,8 @@ module.exports = function(DB, Type) {
         as: 'Scores',
         through: models.UserScores
       });
-      User.belongsTo(models.AuthFacebook, {
-        as: 'AuthFacebook'
+      User.hasMany(models.AuthProvider, {
+        as: 'AuthProvider'
       });
     },
     classMethods: {
@@ -76,11 +78,11 @@ module.exports = function(DB, Type) {
           }).success(function(user) {
             if (user) return done('user already exists');
             User.create({
-              UUID: guid.v4(),
+              uuid: guid.v4(),
               email: email,
               salt: salt,
               hash: hash,
-              setPassword: true,
+              passwordSet: true,
               firstName: fname,
               lastName: lname
             }).success(function(user) {
@@ -94,28 +96,31 @@ module.exports = function(DB, Type) {
           });
         });
       },
-      fill: function(email, fname, lname, done) {
+      fill: function(provider, done) {
         var User = this;
 
         User.find({
           where: {
-            email: email
+            email: provider.email
           }
         }).success(function(user) {
           if (user) {
-            user.setAuthFacebook()
+            //user.setAuthFacebook()
             //TODO: connect users to existing
             return done('user already exists');
           } else {
+            console.log('creating a new user');
             User.create({
-              UUID: guid.v4(),
-              email: email,
-              setPassword: false,
-              firstName: fname,
-              lastName: lname
+              uuid: guid.v4(),
+              email: provider.email,
+              passwordSet: false,
+              firstName: provider.fname,
+              lastName: provider.lname
             }).success(function(user) {
               if (!user) return done('no user');
-              return done(null, user);
+              else {
+                return done(null, user);
+              }
             }).error(function(err) {
               return done(err);
             });

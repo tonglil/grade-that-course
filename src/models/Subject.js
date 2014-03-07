@@ -7,8 +7,8 @@ module.exports = function(DB, Type) {
   var Subject = DB.define("Subject", {
     code: {
       type: Type.STRING,
-      unique: true,
       primaryKey: true,
+      unique: true
     },
     name: {
       type: Type.STRING

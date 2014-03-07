@@ -5,18 +5,18 @@
 var auth = require('./auth');
 
 var User = require('../models').User;
-var AuthFacebook = require('../models').AuthFacebook;
+var AuthProvider = require('../models').AuthProvider;
 
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 module.exports = function(passport) {
   passport.serializeUser(function(user, done) {
-    done(null, user.UUID);
+    done(null, user.uuid);
   });
 
-  passport.deserializeUser(function(UUID, done) {
-    User.find(UUID).success(function(user) {
+  passport.deserializeUser(function(uuid, done) {
+    User.find(uuid).success(function(user) {
       if (!user) done('Incorrect user');
       done(null, user);
     });
@@ -49,19 +49,19 @@ module.exports = function(passport) {
     clientSecret    : auth.facebookAuth.clientSecret,
     callbackURL     : auth.facebookAuth.callbackURL
   }, function(accessToken, refreshToken, profile, done) {
-    console.log(accessToken);
-    console.log(refreshToken);
-    console.log(profile);
+    //console.log('access:', accessToken);
+    //console.log('refresh', refreshToken);
+    //console.log('profile', profile);
 
-    var query = profile.id;
-
-    AuthFacebook.find({
+    AuthProvider.find({
       where: {
-        id: query
+        provider: 'facebook',
+        id: profile.id
       }
     }).success(function(facebook) {
       if (!facebook) {
-        AuthFacebook.create({
+        AuthProvider.create({
+          provider: 'facebook',
           id: profile.id,
           token: accessToken,
           firstName: profile.name.givenName,
@@ -84,23 +84,26 @@ module.exports = function(passport) {
       console.log(facebook.values);
 
       if (!facebook.UserId) {
-      //fill: function(email, fname, lname, done) {
-        User.fill(facebook.email, facebook.firstName, facebook.lastName, function(err, user) {
+        User.fill(facebook, function(err, user) {
+          if (err === 'user already exists') {
+            return done('user already exists');
+            /*
+             *return res.render('register', {
+             *  info: 'User already exists, please enter password to link accounts?'
+             *});
+             */
+          }
+          if (err) return done(err);
 
+          facebook.setUser(user).success(function() {
+            return done(null, user);
+          });
         });
-
-        //TODO: create local-user!
-        console.log('no local user, allow user to create or link a user');
-        return done('no user', false);
       } else {
         facebook.getUser(function(user) {
           return done(null, user);
         });
       }
     }
-
-
-
   }));
-
 };

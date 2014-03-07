@@ -23,7 +23,8 @@ module.exports = function(grunt) {
         'gruntfile.js',
         'src/**/*.js',
         'test/**/*.js',
-        '!src/public/js/jquery-2.*.js'
+        '!src/public/js/jquery-2.*.js',
+        '!src/public/js/bs-*.js'
       ],
       options: {
         globals: {

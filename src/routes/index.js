@@ -7,8 +7,8 @@ module.exports = function(app, passport) {
     if (req.user) {
       console.log(req.user.values);
 
-      req.user.getAuthFacebook().success(function(fb) {
-        console.log('good', fb);
+      req.user.getAuthProvider().success(function(provider) {
+        console.log('good', provider.values);
       }).error(function(err) {
         console.log('bad', err);
       });
