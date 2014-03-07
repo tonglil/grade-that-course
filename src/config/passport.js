@@ -34,6 +34,7 @@ module.exports = function(passport) {
       if (!user) {
         return done('no user', false);
       } else {
+        if (!user.passwordSet) return done('no password', false);
         user.verifyPassword(password, function(err, user) {
           if (err) return done(err);
           else return done(null, user);
@@ -49,10 +50,6 @@ module.exports = function(passport) {
     clientSecret    : auth.facebookAuth.clientSecret,
     callbackURL     : auth.facebookAuth.callbackURL
   }, function(accessToken, refreshToken, profile, done) {
-    //console.log('access:', accessToken);
-    //console.log('refresh', refreshToken);
-    //console.log('profile', profile);
-
     AuthProvider.find({
       where: {
         provider: 'facebook',
@@ -88,9 +85,7 @@ module.exports = function(passport) {
           if (err === 'user already exists') {
             return done('user already exists');
             /*
-             *return res.render('register', {
              *  info: 'User already exists, please enter password to link accounts?'
-             *});
              */
           }
           if (err) return done(err);
@@ -100,7 +95,7 @@ module.exports = function(passport) {
           });
         });
       } else {
-        facebook.getUser(function(user) {
+        facebook.getUser().success(function(user) {
           return done(null, user);
         });
       }

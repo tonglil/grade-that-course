@@ -5,10 +5,10 @@
 module.exports = function(app, passport) {
   app.get('/', function(req, res) {
     if (req.user) {
-      console.log(req.user.values);
+      console.log('user', req.user.values);
 
-      req.user.getAuthProvider().success(function(provider) {
-        console.log('good', provider.values);
+      req.user.getAuthProviders().success(function(provider) {
+        console.log('good', provider[0].values);
       }).error(function(err) {
         console.log('bad', err);
       });

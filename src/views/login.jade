@@ -1,22 +1,24 @@
 extends layout
 
 block content
-  .user-action-wrapper.login.content.text-center
-    h1.form-group Use Social Media
-    .form-group
-      a(href='/auth/facebook' class='btn btn-primary')= 'Facebook'
-      a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
-      a(href='/auth/facebook' class='btn btn-danger')= 'Google'
-    h1.form-group Or Sign In
-    form(action='/login' method='post')
-      if info
-        span.form-group.label.label-warning= info
+  .content
+    .user-action-wrapper.login.text-center
       .form-group
-        input(type='email' class='form-control' placeholder='Email' id='email' name='email' autofocus='autofocus')
-      .form-group
-        input(type='password' class='form-control' placeholder='Password' id='password' name='password')
-      button(type='submit' class='btn btn-default') Log In
+        a(href='/register' class='btn btn-default')= 'Email Sign Up'
+        a(href='/auth/facebook' class='btn btn-primary')= 'Facebook'
+        a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
+        a(href='/auth/facebook' class='btn btn-danger')= 'Google'
+      h1.form-group Or Log In
+      form(id='login' action='/login' method='post')
+        if info
+          span.form-group.label.label-warning= info
+        .form-group
+          input(type='email' class='form-control' placeholder='Email' id='email' name='email' autofocus='autofocus')
+        .form-group
+          input(type='password' class='form-control' placeholder='Password' id='password' name='password')
+        button(type='submit' class='btn btn-default') Log In
+        //TODO: forgot password
 
 append script
   script(type='text/javascript' src='//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js')
-  script(type='text/javascript' src='/js/validateLogin.js')
+  script(type='text/javascript' src='/js/validate-form.js')

@@ -18,7 +18,7 @@ var db = require('./models').db;
 db.query('SET FOREIGN_KEY_CHECKS = 0')
 .then(function() {
   return db.sync({
-    force: true
+    //force: true
   });
 })
 .then(function() {

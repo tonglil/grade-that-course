@@ -61,7 +61,7 @@ module.exports = function(DB, Type) {
         through: models.UserScores
       });
       User.hasMany(models.AuthProvider, {
-        as: 'AuthProvider'
+        as: 'AuthProviders'
       });
     },
     classMethods: {
@@ -105,11 +105,9 @@ module.exports = function(DB, Type) {
           }
         }).success(function(user) {
           if (user) {
-            //user.setAuthFacebook()
-            //TODO: connect users to existing
+            //TODO: connect accounts or setAuthProvier('facebook')?
             return done('user already exists');
           } else {
-            console.log('creating a new user');
             User.create({
               uuid: guid.v4(),
               email: provider.email,

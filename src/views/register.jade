@@ -1,26 +1,24 @@
 extends layout
 
 block content
-  .user-action-wrapper.login.content.text-center
-    h1.form-group Use Social Media
-    .form-group
-      a(href='/auth/facebook' class='btn btn-primary')= 'Facebook'
-      a(href='/auth/facebook' class='btn btn-info')= 'Twitter'
-      a(href='/auth/facebook' class='btn btn-danger')= 'Google'
-    h1.form-group Or Create a New Account
-    form(action="/register" method="post")
-      if info
-        span.form-group.label.label-warning= info
-      .form-group
-        input(type='email' class='form-control' placeholder='Email (not shared)' id='email' name='email' autofocus='autofocus')
-      .form-group
-        input(type='password' class='form-control' placeholder='Password (secured)' id='password' name='password')
-      .form-group
-        input(type='fname' class='form-control' placeholder='First Name' id='fname' name='fname')
-      .form-group
-        input(type='lname' class='form-control' placeholder='Last Name' id='lname' name='lname')
-      button(type='submit' class='btn btn-default') Sign Up
+  .content
+    .user-action-wrapper.login.text-center
+      h1.form-group Create a New Account
+      form(id='register' action='/register' method='post')
+        if info
+          span.form-group.label.label-warning= info
+        .form-group
+          input(type='email' class='form-control' placeholder='Email (not shared)' id='email' name='email' autofocus='autofocus')
+        .form-group
+          input(type='password' class='form-control' placeholder='Password (min 5 characters)' id='password' name='password')
+        .form-group
+          input(type='password' class='form-control' placeholder='Password (repeat)' id='passwordRepeat' name='passwordRepeat')
+        .form-group
+          input(type='fname' class='form-control' placeholder='First Name' id='fname' name='fname')
+        .form-group
+          input(type='lname' class='form-control' placeholder='Last Name' id='lname' name='lname')
+        button(type='submit' class='btn btn-default') Sign Up
 
 append script
   script(type='text/javascript' src='//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js')
-  script(type='text/javascript' src='/js/validateLogin.js')
+  script(type='text/javascript' src='/js/validate-form.js')

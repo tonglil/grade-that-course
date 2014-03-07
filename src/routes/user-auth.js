@@ -61,6 +61,14 @@ module.exports = function(app, passport) {
           info: 'User does not exist'
         });
       }
+      if (err === 'no password') {
+        //TODO: tell them to set a password
+      }
+      if (err === 'user already exists') {
+        return res.render('login', {
+          info: 'Use social media with that email'
+        });
+      }
       if (err === 'incorrect password') {
         return res.render('login', {
           info: 'Incorrect password'

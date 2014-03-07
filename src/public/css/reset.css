@@ -66,6 +66,8 @@ input {
 .btn {
     margin-left: 3px;
     margin-right: 3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 .btn:last-of-type {
     margin-right: 0;
