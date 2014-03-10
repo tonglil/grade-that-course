@@ -49,10 +49,20 @@ module.exports = function(DB, Type) {
       }
     },
     firstName: {
-      type: Type.STRING
+      type: Type.STRING,
+      allowNull: false,
+      validate: {
+        notNull: true,
+        notEmpty: true
+      }
     },
     lastName: {
-      type: Type.STRING
+      type: Type.STRING,
+      allowNull: false,
+      validate: {
+        notNull: true,
+        notEmpty: true
+      }
     }
   }, {
     associate: function(models) {
@@ -105,15 +115,14 @@ module.exports = function(DB, Type) {
           }
         }).success(function(user) {
           if (user) {
-            //TODO: connect accounts or setAuthProvier('facebook')?
-            return done('user already exists');
+            return done(null, user);
           } else {
             User.create({
               uuid: guid.v4(),
               email: provider.email,
               passwordSet: false,
-              firstName: provider.fname,
-              lastName: provider.lname
+              firstName: provider.firstName,
+              lastName: provider.lastName
             }).success(function(user) {
               if (!user) return done('no user');
               else {

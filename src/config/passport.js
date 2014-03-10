@@ -80,10 +80,6 @@ module.exports = function(passport) {
     function doFacebook(facebook) {
       if (!facebook.UserId) {
         User.fill(facebook, function(err, user) {
-          if (err === 'user already exists') {
-            //TODO: info: 'User already exists, please enter password to link accounts?'
-            return done(err);
-          }
           if (err) return done(err);
 
           facebook.setUser(user).success(function() {
@@ -132,10 +128,6 @@ module.exports = function(passport) {
     function doGoogle(google) {
       if (!google.UserId) {
         User.fill(google, function(err, user) {
-          if (err === 'user already exists') {
-            //TODO: info: 'User already exists, please enter password to link accounts?'
-            return done('user already exists');
-          }
           if (err) return done(err);
 
           google.setUser(user).success(function() {

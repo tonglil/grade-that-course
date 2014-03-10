@@ -31,6 +31,12 @@ $(document).ready(function () {
         },
         passwordRepeat: {
           equalTo: '#password'
+        },
+        fname: {
+          required: true,
+        },
+        lname: {
+          required: true,
         }
       },
       errorPlacement: function(error, element) {

@@ -86,11 +86,6 @@ module.exports = function(app, passport) {
 
   app.get('/auth/facebook/callback', function(req, res, next) {
     passport.authenticate('facebook', function(err, user, info) {
-      if (err === 'user already exists') {
-        return res.render('login', {
-          info: 'Use another social media with that email'
-        });
-      }
       if (err) return next(err);
       req.logIn(user, function(err) {
         if (err) return next(err);
@@ -108,11 +103,6 @@ module.exports = function(app, passport) {
 
   app.get('/auth/google/callback', function(req, res, next) {
     passport.authenticate('google', function(err, user, info) {
-      if (err === 'user already exists') {
-        return res.render('login', {
-          info: 'Use another social media with that email'
-        });
-      }
       if (err) return next(err);
       req.logIn(user, function(err) {
         if (err) return next(err);

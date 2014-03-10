@@ -7,8 +7,12 @@ module.exports = function(app, passport) {
     if (req.user) {
       console.log('user', req.user.values);
 
-      req.user.getAuthProviders().success(function(provider) {
-        console.log('good', provider[0].values);
+      req.user.getAuthProviders().success(function(providers) {
+        if (providers.length > 0) {
+          providers.forEach(function(provider) {
+            console.log('provider', provider.values);
+          });
+        }
       }).error(function(err) {
         console.log('bad', err);
       });
