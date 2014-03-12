@@ -17,6 +17,7 @@ module.exports = {
       //storage: ':memory:',
       //omitNull: false,
       //native: false,
+      //defined: {},
       //syncOnAssociation: true,
       define: {
         //freezeTableName: true,
@@ -30,7 +31,7 @@ module.exports = {
         }
       },
       pool: {
-        maxConnections: 5,
+        maxConnections: 10,
         maxIdleTime: 30
       },
       dialect: 'mysql'
