@@ -175,122 +175,122 @@ function scrapeSubjets(code, callback) {
 
     var courses = [];
     var regex = /[0-9].*/;
-$courseTable.each(function(i, item) {
-  var course = {};
-  course.number = $(item).children('td:nth-of-type(1)').text().trim().match(regex)[0];
-  course.name = $(item).children('td:nth-of-type(2)').text().trim();
-  courses.push(course);
-});
+    $courseTable.each(function(i, item) {
+      var course = {};
+      course.number = $(item).children('td:nth-of-type(1)').text().trim().match(regex)[0];
+      course.name = $(item).children('td:nth-of-type(2)').text().trim();
+      courses.push(course);
+    });
 
-if (courses.length === 0) {
-  err = 'Subject ' + code + ' has no courses/was not found';
+    if (courses.length === 0) {
+        err = 'Subject ' + code + ' has no courses/was not found';
 
-  Subject.find({
-    where: {
-      code: code
+        Subject.find({
+            where: {
+                code: code
+            }
+        }).success(function(subject) {
+            subject.destroy().success(function() {
+                console.log('Subject ' + code + ' removed from db');
+                if (callbackOn) return callback(err, result);
+            });
+        });
     }
-  }).success(function(subject) {
-    subject.destroy().success(function() {
-      console.log('Subject ' + code + ' removed from db');
-      if (callbackOn) return callback(err, result);
-    });
-  });
-}
 
-Subject.find({
-  where: {
-    code: code
-  }
-}).success(function(subject) {
-  subject.getFaculty().success(function(faculty) {
-    courses.forEach(function(item) {
-      Course.findOrCreate({
-        number: item.number,
-        SubjectId: code
-      }).success(function(course) {
-        if (course) {
-          course.updateAttributes({
-            name: item.name
-          });
-          course.setSubject(subject).error(function(err) {
-            result.message = 'error setting course\'s subject';
-            if (callbackOn) return callback(err, result);
-          });
-          course.setFaculty(faculty).error(function(err) {
-            result.message = 'error setting course\'s faculty';
-            if (callbackOn) return callback(err, result);
-          });
+    Subject.find({
+        where: {
+            code: code
         }
-      }).error(function(err) {
-        result.message = 'error finding/creating course';
-        if (callbackOn) return callback(err, result);
-      });
+    }).success(function(subject) {
+        subject.getFaculty().success(function(faculty) {
+            courses.forEach(function(item) {
+                Course.findOrCreate({
+                    number: item.number,
+                    SubjectId: code
+                }).success(function(course) {
+                    if (course) {
+                        course.updateAttributes({
+                            name: item.name
+                        });
+                        course.setSubject(subject).error(function(err) {
+                            result.message = 'error setting course\'s subject';
+                            if (callbackOn) return callback(err, result);
+                        });
+                        course.setFaculty(faculty).error(function(err) {
+                            result.message = 'error setting course\'s faculty';
+                            if (callbackOn) return callback(err, result);
+                        });
+                    }
+                }).error(function(err) {
+                    result.message = 'error finding/creating course';
+                    if (callbackOn) return callback(err, result);
+                });
+            });
+        });
     });
-  });
-});
 
-if (callbackOn) return callback(null);
+    if (callbackOn) return callback(null);
   });
 }
 
 //Scrapes each course in the database
 function scrapeCourses(courses, callback) {
-  var queue = async.queue(function(course, callback) {
-    var callbackOn = false;
+    var queue = async.queue(function(course, callback) {
+        var callbackOn = false;
 
-    if (callback && typeof callback == 'function') {
-      callbackOn = true;
+        if (callback && typeof callback == 'function') {
+            callbackOn = true;
+        }
+
+        if (course.credits && course.description) {
+            //Course has details already, no need to overwrite unless forcing
+            if (callbackOn) return callback();
+        }
+
+        var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=3&dept=' + course.SubjectId + '&course=' + course.number;
+
+        request(url, function(err, response, body) {
+            if (err || !response || response.statusCode !== 200) {
+                if (callbackOn) return callback();
+            }
+
+            var $ = cheerio.load(body);
+            $body = $('body');
+            $description = $body.find('.content.expand').children('p').slice(0,1).text().trim();
+            $credits = parseInt($body.find('.content.expand').children('p').slice(1,2).text().trim().slice(-1), 10);
+            $na = $body.find('.content.expand').text().trim().indexOf('no longer offered');
+
+            if ($na != -1) {
+                console.log('Course ' + course.SubjectId + course.number + ' had no data');
+                if (callbackOn) return callback();
+            }
+
+            course.description = $description;
+            if (isNumber($credits)) course.credits = $credits;
+
+            course.save([
+                'description', 'credits'
+            ]).success(function() {
+                return callback();
+            }).error(function(err) {
+                return callback(err);
+            });
+        });
+    }, 10);
+
+    function start(courses) {
+        courses.forEach(function(course) {
+            queue.push(course);
+        });
     }
 
-    if (course.credits && course.description) {
-      //Course has details already, no need to overwrite unless forcing
-      if (callbackOn) return callback();
+    start(courses);
+
+    queue.drain = function() {
+        callback('done');
+    };
+
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
     }
-
-    var url = 'https://courses.students.ubc.ca/cs/main?pname=subjarea&tname=subjareas&req=3&dept=' + course.SubjectId + '&course=' + course.number;
-
-    request(url, function(err, response, body) {
-      if (err || !response || response.statusCode !== 200) {
-        if (callbackOn) return callback();
-      }
-
-      var $ = cheerio.load(body);
-      $body = $('body');
-      $description = $body.find('.content.expand').children('p').slice(0,1).text().trim();
-      $credits = parseInt($body.find('.content.expand').children('p').slice(1,2).text().trim().slice(-1), 10);
-      $na = $body.find('.content.expand').text().trim().indexOf('no longer offered');
-
-      if ($na != -1) {
-        console.log('Course ' + course.SubjectId + course.number + ' had no data');
-        if (callbackOn) return callback();
-      }
-
-      course.description = $description;
-      if (isNumber($credits)) course.credits = $credits;
-
-      course.save([
-        'description', 'credits'
-      ]).success(function() {
-        return callback();
-      }).error(function(err) {
-        return callback(err);
-      });
-    });
-  }, 10);
-
-  function start(courses) {
-    courses.forEach(function(course) {
-      queue.push(course);
-    });
-  }
-
-  start(courses);
-
-  queue.drain = function() {
-    callback('done');
-  };
-
-  function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-  }
 }
