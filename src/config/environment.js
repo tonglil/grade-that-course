@@ -5,11 +5,12 @@
 var express = require('express');
 var path = require('path');
 var passport = require('passport');
+var config = require('../config').app;
 var middlewares = require('../controllers/middlewares');
 
 module.exports = function (app) {
   app.configure(function() {
-    app.set('port', process.env.PORT || 4000);
+    app.set('port', config.port);
     app.use(express.logger('dev')); //Logs http requests in console
     app.use(express.compress());
     app.use(express.favicon());

@@ -37,8 +37,8 @@ module.exports = function(app, passport) {
         'hard',
         'fun',
         'useful or interesting',
-        'poor Profs',
-        'poor TAs'
+        'good Profs',
+        'good TAs'
       ],
       categoriesSlug: [
         'best',
@@ -52,11 +52,12 @@ module.exports = function(app, passport) {
       ],
       /*
        *menu: [
-       *  'scrape',
        *  'scrape/list',
        *  'scrape/subjects',
-       *  'scrape/subject/EECE',
        *  'scrape/courses',
+       *
+       *  'scrape',
+       *  'scrape/subject/EECE',
        *  'scrape/course/EECE/320',
        *  'list/all',
        *  'list/subject/EECE',
