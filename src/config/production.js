@@ -4,9 +4,9 @@
 
 module.exports = {
   database: {
-    name: 'course_voter',
-    username: 'voter_user',
-    password: 'course_voter_pw',
+    name: 'db_name',
+    username: 'db_user',
+    password: 'db_user_pw',
     options: {
       //host: localhost,
       //port: 3306,
@@ -19,11 +19,21 @@ module.exports = {
       //defined: {},
       //sync: { force: true },
       //syncOnAssociation: true,
+      define: {
+        //freezeTableName: true,
+        instanceMethods: {
+          clean: function() {
+            var object = this.values;
+            delete object.createdAt;
+            delete object.updatedAt;
+            return object;
+          }
+        }
+      },
       pool: {
-        maxConnections: 5,
+        maxConnections: 10,
         maxIdleTime: 30
       },
-      //language: 'en',
       dialect: 'mysql'
     }
   },
